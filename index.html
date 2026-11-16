@@ -453,6 +453,13 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.5}
 .pop{animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
 .seg-note{font-size:11.5px;color:var(--muted2);line-height:1.6;text-align:center;margin:4px 0 10px}
+.reward-box{margin-top:4px;padding:12px;border:1.5px dashed #EADCC4;border-radius:16px;background:#FFFCF4}
+.reward-presets{display:flex;gap:6px;margin-bottom:8px}
+.reward-presets button{flex:1;padding:9px 4px;border-radius:12px;border:1.5px solid #EFE6D6;background:#fff;font-weight:800;font-size:13px;color:#8E7A61;box-shadow:var(--shadow-sm)}
+.reward-presets button.on{background:#FFF6DA;border-color:#F2CF7C;color:#8A6414;box-shadow:0 3px 10px rgba(230,190,90,.22)}
+.reward-row{display:flex;align-items:center;gap:8px}
+.reward-row .input{flex:1}
+.reward-row .unit{font-size:14px;font-weight:800;color:#8E7A61}
 .warn{background:#FFF1E8;border:1.5px solid #F6D3B8;color:#A9642F;border-radius:16px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin:0 2px 12px;font-weight:700}
 </style>
 </head>
@@ -485,7 +492,12 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.5}
 'use strict';
 
 var STORE_KEY = 'familyRecord.v1';
-var REWARD = 500;
+var REWARD_DEFAULT = 100;
+/* 용돈 단가 — 설정에서 바꾼 값(S.reward)을 쓰고, 없으면 기본 100원 */
+function rewardAmt(){
+  var v = S ? +S.reward : 0;
+  return (v > 0) ? Math.round(v) : REWARD_DEFAULT;
+}
 
 var MEMBERS = [
   { id:'haram', name:'하람', title:'하람공주', sub:'치와와와 함께', avatar:'haram', tone:'pink', kid:true },
@@ -558,6 +570,7 @@ function probeStorage(){
 var DEFAULTS = {
   version: 1,
   tab: 'home',
+  reward: REWARD_DEFAULT,
   todos: {
     haram: ['정리정돈하기','책 30분 읽기','공부하기'],
     isol:  ['정리정돈하기','내일 준비물 챙기기','공부하기'],
@@ -637,6 +650,8 @@ function mergeDefaults(p){
     if (p[k] && typeof p[k] === 'object') s[k] = p[k];
   });
   if (p.tab) s.tab = p.tab;
+  if (p.reward != null && +p.reward > 0) s.reward = Math.round(+p.reward);
+  if (!(s.reward > 0)) s.reward = REWARD_DEFAULT;
   // guarantee all four members exist in todos
   MEMBERS.forEach(function(m){
     if (!Array.isArray(s.todos[m.id])) s.todos[m.id] = [];
@@ -828,10 +843,10 @@ function routineDoneCount(id, key){
   routineItems(id).forEach(function(it){ if (c[it.id]) n++; });
   return n;
 }
-function routineEarnedOn(id, key){ return routineDoneCount(id, key) * REWARD; }
+function routineEarnedOn(id, key){ return routineDoneCount(id, key) * rewardAmt(); }
 function earnedTotal(id){
   var all = S.checks[id] || {}, total = 0;
-  for (var k in all){ total += routineDoneCount(id, k) * REWARD; }
+  for (var k in all){ total += routineDoneCount(id, k) * rewardAmt(); }
   return total;
 }
 function depositTotal(id){ return (S.allowance[id].deposit||[]).reduce(function(a,x){ return a + (+x.amount||0); }, 0); }
@@ -1070,7 +1085,7 @@ function renderRoutine(){
       '<button class="chk blue' + (on ? ' on' : '') + '" data-act="routineToggle" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="완료 체크">' + checkMark() + '</button>' +
       '<div class="rtext" data-act="routineToggle" data-kid="' + kid + '" data-id="' + it.id + '">' + esc(it.text) +
         '<div class="meta">' + (it.note ? '<span class="chip">' + esc(it.note) + '</span>' : '') +
-        '<span class="chip money">🪙 ' + REWARD + '원</span></div></div>' +
+        '<span class="chip money">🪙 ' + won(rewardAmt()) + '</span></div></div>' +
       '<div class="btns">' +
         '<button class="mini-btn pin' + (it.pinned ? ' on' : '') + '" data-act="routinePin" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="고정">📌</button>' +
         '<button class="mini-btn" data-act="routineEdit" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="수정">✏️</button>' +
@@ -1078,7 +1093,7 @@ function renderRoutine(){
       '</div></li>';
   });
   h += '</ul><button class="todo-add" data-act="routineAdd">+ 루틴 추가</button>' +
-    '<p class="routine-note">루틴을 하나라도 마치면 ' + m.title + ' 도장판에 도장이 찍히고,<br>' + won(REWARD) + '씩 용돈기입장에 쌓여요.</p>' +
+    '<p class="routine-note">루틴을 하나라도 마치면 ' + m.title + ' 도장판에 도장이 찍히고,<br>' + won(rewardAmt()) + '씩 용돈기입장에 쌓여요.</p>' +
     '</section>';
 
   h += '<section class="card mint" style="padding:14px">' +
@@ -1102,7 +1117,7 @@ function renderMoney(){
   var h = switchPills('moneyKid', kid);
   h += '<div style="text-align:center;margin:2px 0 12px">' +
     '<div style="font-size:20px;font-weight:800;letter-spacing:-.5px">' + m.title + ' 용돈기입장</div>' +
-    '<div style="font-size:11.5px;color:var(--muted);margin-top:2px">공부·루틴을 마칠 때마다 ' + REWARD + '원씩 쌓여요 · 이 기기에만 저장돼요</div></div>';
+    '<div style="font-size:11.5px;color:var(--muted);margin-top:2px">공부·루틴을 마칠 때마다 ' + won(rewardAmt()) + '씩 쌓여요 · 이 기기에만 저장돼요</div></div>';
 
   h += '<section class="balance-card">' +
     '<div class="bal-top"><div class="bal-label">지금 모은 돈</div>' +
@@ -1137,7 +1152,7 @@ function renderMoney(){
       h += '<div class="log-row"><span class="log-d">' + (d.getMonth()+1) + '월 ' + d.getDate() + '일' +
         (k === todayKey() ? '<span class="today-badge">오늘</span>' : '') + '</span>' +
         '<span class="log-t">완료 ' + n + '개</span>' +
-        '<span class="amt">+' + num(n * REWARD) + '원</span></div>';
+        '<span class="amt">+' + num(n * rewardAmt()) + '원</span></div>';
     });
   }
   h += '</section>';
@@ -1460,7 +1475,7 @@ function openRoutineModal(itemId){
     (S.routines[kid] || []).forEach(function(it){ if (it.id === itemId) editing = it; });
   }
   var html = '<h3>' + (editing ? '루틴 수정' : '루틴 추가') + '</h3>' +
-    '<p class="hint">' + memberById(kid).title + ' 루틴에 추가해요. 완료하면 ' + REWARD + '원이 적립돼요.</p>' +
+    '<p class="hint">' + memberById(kid).title + ' 루틴에 추가해요. 완료하면 ' + won(rewardAmt()) + '이 적립돼요.</p>' +
     '<div class="field"><div class="field-label">이름</div>' +
       '<input class="input" id="rtText" value="' + (editing ? esc(editing.text) : '') + '" placeholder="예: 구몬국어"></div>' +
     '<div class="field"><div class="field-label">설명 (선택)</div>' +
@@ -1549,14 +1564,27 @@ function openMemoEditModal(id){
 function openSettings(){
   var html = '<h3>설정</h3>' +
     '<p class="hint">모든 기록은 이 기기 안에만 저장돼요. 인터넷이 없어도 그대로 열려요.<br>기기를 바꾸기 전에는 백업 파일로 저장해 두세요.</p>' +
-    '<div style="display:flex;flex-direction:column;gap:8px">' +
+    '<div class="reward-box">' +
+      '<div class="field-label">루틴 하나 마칠 때 쌓이는 용돈</div>' +
+      '<div class="reward-presets">' +
+        [100, 300, 500, 1000].map(function(v){
+          return '<button data-act="rewardPreset" data-v="' + v + '" class="' + (rewardAmt() === v ? 'on' : '') + '">' + v + '원</button>';
+        }).join('') +
+      '</div>' +
+      '<div class="reward-row">' +
+        '<input class="input num" type="number" inputmode="numeric" min="1" max="1000000" step="10" value="' + rewardAmt() + '" data-act="rewardInput" aria-label="용돈 단가">' +
+        '<span class="unit">원</span>' +
+      '</div>' +
+      '<p class="seg-note" style="text-align:left;margin:8px 0 0">바꾸면 이 기기의 루틴 적립 금액이 모두 이 값으로 다시 계산돼요.<br>용돈기입장의 입금·사용 내역은 그대로 남아요.</p>' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' +
       '<button class="btn block" data-act="backup">💾 백업 파일로 저장</button>' +
       '<button class="btn block" data-act="restore">📂 백업 파일 불러오기</button>' +
       '<button class="btn block" data-act="reset" style="color:#C9656B">🧹 처음부터 다시 시작</button>' +
     '</div>' +
     '<p class="seg-note" style="margin-top:14px">브라우저 메뉴에서 “홈 화면에 추가”를 하면<br>앱처럼 열 수 있어요.</p>' +
     '<div class="actions"><button class="btn block" data-act="closeModal">닫기</button></div>';
-  openModal(html);
+  openModal(html, { focus: false });
 }
 
 function openReset(){
@@ -1663,12 +1691,12 @@ function onAction(act, el){
         var after = routineDoneCount(kid);
         if (before === 0 && after > 0){
           celebrate('🐶');
-          toast(memberById(kid).title + ' 도장 찍혔어요! ' + won(REWARD) + '도 쌓였어요 🎉');
+          toast(memberById(kid).title + ' 도장 찍혔어요! ' + won(rewardAmt()) + '도 쌓였어요 🎉');
         } else {
-          toast(memberById(kid).title + ' +' + won(REWARD) + ' 적립 · ' + after + '/' + routineItems(kid).length + '개 완료');
+          toast(memberById(kid).title + ' +' + won(rewardAmt()) + ' 적립 · ' + after + '/' + routineItems(kid).length + '개 완료');
         }
       } else {
-        toast(won(REWARD) + ' 적립을 취소했어요');
+        toast(won(rewardAmt()) + ' 적립을 취소했어요');
       }
       return;
     }
@@ -1891,6 +1919,17 @@ function onAction(act, el){
       return;
 
     /* --- 설정 --- */
+    case 'rewardPreset': {
+      var pv = Math.round(+d.v || 0);
+      if (pv > 0){
+        S.reward = Math.min(pv, 1000000);
+        saveNow();
+        render();
+        openSettings();
+        toast('루틴 용돈을 ' + won(rewardAmt()) + '으로 바꿨어요');
+      }
+      return;
+    }
     case 'backup': {
       try {
         var blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
@@ -1943,6 +1982,10 @@ document.addEventListener('input', function(e){
     S.allowance[el.dataset.kid].start = v;
     save();
   }
+  if (el.dataset.act === 'rewardInput'){
+    var rv = Math.min(Math.round(+el.value || 0), 1000000);
+    if (rv > 0){ S.reward = rv; save(); }
+  }
 });
 
 document.addEventListener('change', function(e){
@@ -1953,6 +1996,19 @@ document.addEventListener('change', function(e){
   }
   if (el.dataset.act === 'mealInput'){
     saveNow();
+  }
+  if (el.dataset.act === 'rewardInput'){
+    var rv = Math.round(+el.value || 0);
+    if (!(rv > 0)) rv = REWARD_DEFAULT;
+    if (rv > 1000000) rv = 1000000;
+    S.reward = rv;
+    saveNow(); render();
+    toast('루틴 용돈을 ' + won(rewardAmt()) + '으로 바꿨어요');
+    /* blur 처리 중에 모달을 다시 그리면 브라우저가 예외를 던져서 다음 차례로 미룹니다. */
+    setTimeout(function(){
+      var root = document.getElementById('modalRoot');
+      if (root && root.querySelector('[data-act="rewardInput"]')) openSettings();
+    }, 0);
   }
 });
 

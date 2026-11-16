@@ -8,7 +8,7 @@
 
 ## 휴대폰에 앱처럼 설치하기 (Android Chrome)
 
-1. <https://bada1986a-art.github.io/family-record/> 를 엽니다.
+1. <https://bada1986a-art.github.io/> 를 엽니다.
 2. 오른쪽 위 ⋮ 메뉴 → **앱 설치** (또는 **홈 화면에 추가**).
 3. 홈 화면의 치와와 아이콘으로 바로 열립니다. 설치하면 오프라인에서도 화면이 열립니다.
 
