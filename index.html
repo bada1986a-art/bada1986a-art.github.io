@@ -93,6 +93,15 @@ ul,ol{margin:0;padding:0;list-style:none}
 }
 .icon-btn:active{transform:scale(.94)}
 .icon-btn svg{width:21px;height:21px}
+.share-btn{
+  height:46px;padding:0 13px;border-radius:23px;
+  display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(180deg,#FFF5CE,#FFE7A3);border:1.5px solid #F0D071;
+  color:#8A6414;font-weight:800;font-size:13.5px;letter-spacing:-.2px;white-space:nowrap;
+  box-shadow:0 3px 12px rgba(230,190,90,.30);transition:transform .12s ease;
+}
+.share-btn:active{transform:scale(.94)}
+.share-btn .s-ic{font-size:15px;line-height:1}
 .dateline{padding:0 2px 12px;color:var(--muted);font-size:13.5px;line-height:1.35}
 .dateline b{color:var(--ink2);font-weight:700}
 .dateline .sub{color:var(--muted2)}
@@ -461,6 +470,29 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.5}
 .reward-row .input{flex:1}
 .reward-row .unit{font-size:14px;font-weight:800;color:#8E7A61}
 .warn{background:#FFF1E8;border:1.5px solid #F6D3B8;color:#A9642F;border-radius:16px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin:0 2px 12px;font-weight:700}
+
+/* ---------- 공유 (카톡) ---------- */
+.share-area{
+  width:100%;min-height:210px;max-height:44vh;overflow:auto;resize:vertical;
+}
+textarea.share-area{
+  min-height:210px;font-size:13.5px;line-height:1.62;white-space:pre-wrap;
+  background:#FFFCF4;border-color:#EADCC4;
+}
+.share-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.share-actions .btn{padding:14px 12px}
+
+/* 좁은 화면에서도 제목·공유·설정 버튼이 한 줄에 들어오게 */
+@media (max-width:430px){
+  .brand h1{font-size:22px}
+  .share-btn{font-size:13px;padding:0 11px}
+}
+@media (max-width:365px){
+  .brand .mark{width:34px;height:34px}
+  .brand h1{font-size:20px}
+  .icon-btn{width:42px;height:42px}
+  .share-btn{height:42px;font-size:12.5px;padding:0 10px;gap:4px}
+}
 </style>
 </head>
 <body>
@@ -471,6 +503,7 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.5}
       <h1><span class="brown">우리 가족</span> <span class="pink">기록장</span></h1>
     </div>
     <div class="top-actions">
+      <button class="share-btn" data-act="share" aria-label="카톡 공유"><span class="s-ic">💬</span>카톡공유</button>
       <button class="icon-btn" data-act="settings" aria-label="설정">
         <svg viewBox="0 0 24 24" fill="none" stroke="#8C7A66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.11a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.11A1.7 1.7 0 0 0 4.66 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.49 1z"/></svg>
       </button>
@@ -821,7 +854,7 @@ function openModal(html, opts){
   opts = opts || {};
   var root = document.getElementById('modalRoot');
   root.innerHTML = '<div class="overlay '+(opts.center?'center':'')+'" data-act="overlay">'+
-      '<div class="sheet" role="dialog" aria-modal="true">'+html+'</div></div>';
+      '<div class="sheet" data-act="sheet" role="dialog" aria-modal="true">'+html+'</div></div>';
   document.body.style.overflow = 'hidden';
   var first = root.querySelector('input,textarea');
   if (first && opts.focus !== false) setTimeout(function(){ try{ first.focus(); }catch(e){} }, 120);
@@ -1595,6 +1628,156 @@ function openReset(){
   openModal(html);
 }
 
+/* ---------------- 카톡 공유 ---------------- */
+function trimText(t, max){
+  t = String(t == null ? '' : t).replace(/\s+/g, ' ').trim();
+  if (!max) return t;
+  var chars = Array.from(t);   /* 이모지가 중간에 잘리지 않게 글자 단위로 */
+  if (chars.length > max) t = chars.slice(0, max - 1).join('').trim() + '…';
+  return t;
+}
+function ddayLabel(dateStr){
+  var diff = Math.round((fromKey(dateStr) - fromKey(todayKey())) / 86400000);
+  if (diff === 0) return '오늘';
+  if (diff > 0) return 'D-' + diff;
+  return '';
+}
+function recentMemos(n){
+  return (S.memos || []).filter(function(m){ return m.sticker || trimText(m.text, 1); })
+    .slice().sort(function(a, b){ return (b.ts || 0) - (a.ts || 0); }).slice(0, n);
+}
+
+/* 오늘 기록을 카톡에 붙여넣기 좋은 글로 정리 */
+function buildShareText(){
+  var now = new Date();
+  var key = todayKey();
+  var L = [];
+
+  L.push('🏡 우리 가족 기록장 (' + now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + weekdayKR(now) + '요일)');
+  L.push('');
+
+  /* 가족 미션 */
+  var missionDone = !!((S.mission.done || {})[key]);
+  L.push('🎲 가족 미션 · ' + (missionDone ? '✅ 오늘 완료' : '⬜ 아직'));
+  L.push('· ' + S.mission.emoji + ' ' + trimText(S.mission.title, 40) + (S.mission.count ? ' (함께 ' + S.mission.count + '번째)' : ''));
+  L.push('');
+
+  /* 오늘 할 일 — 하람 · 이솔 · 아빠 · 엄마 */
+  L.push('✅ 오늘 할 일');
+  var wroteTodo = false;
+  MEMBERS.forEach(function(m){
+    var list = S.todos[m.id] || [];
+    if (!list.length) return;
+    wroteTodo = true;
+    var c = todoCount(m.id);
+    var line = '· ' + m.title + ' ' + c.done + '/' + c.total + ' — ';
+    line += list.map(function(t){ return (t.done ? '✅' : '⬜') + ' ' + trimText(t.text, 24); }).join('  ');
+    if (c.done === c.total) line += '  🎉';
+    L.push(line);
+  });
+  if (!wroteTodo) L.push('· 아직 적어 둔 할 일이 없어요');
+  L.push('');
+
+  /* 하람 · 이솔 루틴 · 도장 · 용돈 */
+  L.push('⭐ 루틴 · 도장 · 용돈');
+  KIDS.forEach(function(k){
+    var total = routineItems(k.id).length;
+    var done = routineDoneCount(k.id);
+    L.push('· ' + k.title + ' 루틴 ' + done + '/' + total +
+      ' · 오늘 도장 ' + (isStamped(k.id, now) ? '✅' : '⬜') +
+      ' · 잔액 ' + won(balance(k.id)));
+  });
+  L.push('');
+
+  /* 오늘 · 다가오는 일정 */
+  var evs = (S.events || []).filter(function(e){ return e.date && e.date >= key; })
+    .sort(function(a, b){ return (a.date + (a.time || '')) < (b.date + (b.time || '')) ? -1 : 1; })
+    .slice(0, 3);
+  if (evs.length){
+    L.push('🗓 일정');
+    evs.forEach(function(e){
+      var d = fromKey(e.date);
+      var who = e.who ? memberById(e.who).title : '온 가족';
+      L.push('· ' + (d.getMonth()+1) + '/' + d.getDate() + ' (' + weekdayKR(d) + ') ' +
+        (e.time ? e.time + ' ' : '') + trimText(e.title, 30) +
+        ' (' + ddayLabel(e.date) + ' · ' + who + ')');
+    });
+    L.push('');
+  }
+
+  /* 최근 메모 */
+  var memos = recentMemos(2);
+  if (memos.length){
+    L.push('💬 최근 메모');
+    memos.forEach(function(msg){
+      var who = msg.who ? memberById(msg.who).title : '';
+      L.push('· ' + (who ? who + ': ' : '') + (msg.sticker ? msg.sticker : trimText(msg.text, 40)));
+    });
+    L.push('');
+  }
+
+  while (L.length && L[L.length - 1] === '') L.pop();
+  return L.join('\n');
+}
+
+/* setTimeout 없이 in-app 복사 — 안 되면 옛 방식으로 */
+function legacyCopy(text){
+  try {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '-9999px';
+    ta.style.fontSize = '16px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    var ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch(e){ return false; }
+}
+function copyText(text){
+  return new Promise(function(resolve, reject){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ resolve(); }, function(){
+        if (legacyCopy(text)) resolve(); else reject(new Error('copy-failed'));
+      });
+    } else if (legacyCopy(text)){
+      resolve();
+    } else {
+      reject(new Error('copy-failed'));
+    }
+  });
+}
+function copyAndToast(text, okMsg){
+  copyText(text).then(function(){
+    toast(okMsg || '카톡에 붙여넣기 할 수 있게 복사했어요!');
+  }, function(){
+    toast('복사를 못 했어요. 미리보기 글자를 길게 눌러 복사해 주세요');
+  });
+}
+function shareTextValue(){
+  var ta = document.getElementById('shareText');
+  var v = ta ? ta.value : '';
+  return (v && v.trim()) ? v : buildShareText();
+}
+function openShareModal(){
+  var text = buildShareText();
+  var html = '<h3>💬 카톡으로 공유</h3>' +
+    '<p class="hint">오늘 기록을 카톡에 붙여넣을 수 있게 정리했어요.<br>아래 글자는 고쳐서 보내도 돼요.</p>' +
+    '<textarea class="input share-area" id="shareText" spellcheck="false" aria-label="공유할 내용">' + esc(text) + '</textarea>' +
+    '<div class="share-actions">' +
+      '<button class="btn main block" data-act="shareSend">📤 카톡 등 앱으로 공유</button>' +
+      '<button class="btn block" data-act="shareCopy">📋 텍스트 복사</button>' +
+    '</div>' +
+    '<div class="actions"><button class="btn block ghost" data-act="closeModal">닫기</button></div>';
+  openModal(html, { focus: false });
+  buzz(10);
+}
+
 /* =========================================================
    ACTIONS
    ========================================================= */
@@ -1617,9 +1800,33 @@ function onAction(act, el){
       return;
 
     case 'settings': openSettings(); return;
+    /* 시트 안쪽(내용·입력창)을 눌러도 모달이 닫히지 않게 */
+    case 'sheet': return;
     case 'overlay':
       if (el.classList.contains('overlay')) closeModal();
       return;
+
+    /* --- 카톡 공유 --- */
+    case 'share': openShareModal(); return;
+    case 'shareCopy':
+      copyAndToast(shareTextValue(), '카톡에 붙여넣기 할 수 있게 복사했어요!');
+      return;
+    case 'shareSend': {
+      var shareBody = shareTextValue();
+      if (navigator.share){
+        try {
+          navigator.share({ title: '우리 가족 기록장', text: shareBody }).then(function(){
+            toast('공유했어요');
+          }, function(err){
+            if (err && err.name === 'AbortError') return;
+            copyAndToast(shareBody, '공유 창이 열리지 않아 복사했어요. 카톡에 붙여넣어 주세요!');
+          });
+          return;
+        } catch(e){ /* 공유를 못 쓰는 브라우저 → 복사로 */ }
+      }
+      copyAndToast(shareBody, '이 브라우저에서는 앱 공유가 안 돼서 복사했어요. 카톡에 붙여넣어 주세요!');
+      return;
+    }
     case 'closeModal': closeModal(); return;
 
     /* --- to-do --- */

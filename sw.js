@@ -1,6 +1,6 @@
 /* 우리 가족 기록장 · service worker
    앱 화면은 오프라인에서도 열리고, 기록은 원래 이 기기 브라우저에만 저장됩니다. */
-var CACHE = 'family-record-v2';
+var CACHE = 'family-record-v3';
 var ASSETS = [
   './',
   './index.html',
