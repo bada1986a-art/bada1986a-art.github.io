@@ -260,7 +260,8 @@ ul,ol{margin:0;padding:0;list-style:none}
 .chip.green{background:#E9F8EF;color:#3E9E72;border-color:#CDEBD9}
 .ritem .rtext{flex:1 1 120px;min-width:0;font-size:14.5px;word-break:break-word;line-height:1.35}
 .ritem.done .rtext{color:#B9AB98;text-decoration:line-through;text-decoration-thickness:1.5px;text-decoration-color:#D9CDB8}
-.ritem .meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px}
+.ritem .meta{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:4px}
+.ritem .meta .chip{font-size:10.5px;padding:2px 7px;gap:3px}
 .ritem .chips{flex:0 0 auto;display:flex;gap:5px;align-items:center}
 .ritem .btns{flex:0 0 auto;display:flex;gap:5px}
 .routine-note{font-size:11.5px;color:var(--muted);margin-top:12px;text-align:center;line-height:1.6}
@@ -482,16 +483,247 @@ textarea.share-area{
 .share-actions{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .share-actions .btn{padding:14px 12px}
 
-/* 좁은 화면에서도 제목·공유·설정 버튼이 한 줄에 들어오게 */
+/* =========================================================
+   v4 — 홈 배너·시계·가족 상태·전화·알림·일정 달력·식사·데이터 보호
+   ========================================================= */
+/* 헤더 알림 배지 */
+.icon-btn{position:relative}
+.badge{
+  position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;padding:0 5px;
+  border-radius:999px;background:linear-gradient(180deg,#FF93B4,#F06E90);color:#fff;
+  font-size:11px;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;
+  border:2px solid #FFFDF5;box-shadow:0 2px 6px rgba(240,110,144,.42);
+}
+
+/* 인사 배너 */
+.hero{
+  margin:0 0 14px;border-radius:26px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#FFE7EF 0%,#FFF0F4 52%,#FFF7E9 100%);
+  border:1.5px solid #F7DFE6;box-shadow:var(--shadow);
+}
+.hero::before,.hero::after{
+  content:'';position:absolute;top:-4px;width:7px;height:24px;border-radius:4px;
+  background:linear-gradient(180deg,#F5CAD9,#F9DFE8);opacity:.85;
+}
+.hero::before{left:32px}
+.hero::after{right:32px}
+.hero-friends{display:flex;align-items:flex-end;justify-content:center;gap:5px;padding:18px 12px 2px}
+.hero-friend{flex:1 1 0;max-width:94px;display:flex;flex-direction:column;align-items:center}
+.hero-friend .av{width:100%;aspect-ratio:1/1;border-radius:50%;border:2.5px solid #fff;box-shadow:0 5px 14px rgba(214,150,175,.20)}
+.hero-friend .cushion{width:84%;height:11px;border-radius:999px;margin-top:-7px;opacity:.9;box-shadow:0 2px 5px rgba(190,150,165,.18)}
+.hero-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 14px 12px}
+.hero-cap{font-size:12.5px;font-weight:800;color:#B57E93;letter-spacing:-.2px}
+.hero-toggle{
+  border-radius:999px;background:rgba(255,255,255,.94);border:1.5px solid #F0DADF;
+  padding:6px 13px;font-size:12px;font-weight:800;color:#A98F96;box-shadow:var(--shadow-sm);
+}
+.hero.closed{margin-bottom:12px}
+.hero-compact{display:flex;align-items:center;gap:8px;padding:9px 12px}
+.hero-compact .hc-avs{display:flex;gap:-4px;flex:0 0 auto}
+.hero-compact .av{width:26px;height:26px;border-radius:9px;border:1.5px solid #fff;margin-right:-6px}
+.hero-compact .hc-tx{flex:1;min-width:0;font-size:12.5px;font-weight:800;color:#B57E93;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* 실시간 시계 */
+.clock-row{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;padding:0 4px;margin:2px 0 14px}
+.clock{
+  font-family:var(--font-title);font-size:38px;line-height:1;color:#5B4A3C;letter-spacing:-1.4px;
+  font-variant-numeric:tabular-nums;
+}
+.clock-date{font-size:14px;font-weight:800;color:#8C7761}
+
+/* 가족 상태 */
+.status-scroll{
+  display:flex;gap:9px;overflow-x:auto;padding:3px 2px 9px;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.status-scroll::-webkit-scrollbar{display:none}
+.status-card{
+  flex:0 0 47%;max-width:168px;scroll-snap-align:start;border-radius:20px;background:#fff;
+  border:1.5px solid #F4E4D6;padding:10px 11px 10px;box-shadow:var(--shadow-sm);
+}
+.status-card.st-pink{background:linear-gradient(165deg,#FFF8FB,#FFFDF9);border-color:#F8DEE6}
+.status-card.st-mint{background:linear-gradient(165deg,#F7FCFA,#FFFDF9);border-color:#DCEFE3}
+.status-card.st-blue{background:linear-gradient(165deg,#F8FBFF,#FFFDF9);border-color:#DEECF8}
+.status-card.st-peach{background:linear-gradient(165deg,#FFF9F3,#FFFDF9);border-color:#F7E3D3}
+.st-head{display:flex;align-items:center;gap:7px;min-width:0}
+.st-head .av{width:30px;height:30px;border-radius:11px;border:1.5px solid #F4EBDC;flex:0 0 auto}
+.st-name{font-size:13.5px;font-weight:800;letter-spacing:-.3px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-time{font-size:10px;color:var(--muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-pill{display:flex;align-items:center;gap:4px;font-size:12.5px;font-weight:800;color:#5B4A3C;margin:8px 0 9px;line-height:1.25;min-height:32px;word-break:keep-all}
+.st-pill .e{font-size:15px;line-height:1}
+.st-btn{width:100%;border-radius:13px;background:rgba(255,255,255,.96);border:1.5px solid #F0E4D2;padding:7px 4px;font-size:12px;font-weight:800;color:#8E7A61}
+.st-btn:active{background:#FFF6E3}
+.st-options{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.st-opt{display:flex;align-items:center;gap:6px;border-radius:14px;border:1.6px solid #EFE3CE;background:#FFFDF6;padding:10px 9px;font-size:12.5px;font-weight:800;color:#8A7760;text-align:left}
+.st-opt.on{background:#FFF3DC;border-color:#EFCB80;color:#8A6414}
+
+/* 지금 바로 연락 */
+.call-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.call-btn{
+  display:flex;align-items:center;gap:8px;min-width:0;
+  border-radius:17px;border:1.5px solid #F3E4D6;background:linear-gradient(170deg,#FFFCF6,#FFF8F2);
+  padding:9px 10px;text-align:left;box-shadow:var(--shadow-sm);
+}
+.call-btn:active{transform:scale(.97)}
+a.call-btn,a.call-big{text-decoration:none;color:inherit}
+a.call-btn .cb-name,a.call-btn .cb-num,a.call-big{text-decoration:none}
+.cb-ic{width:31px;height:31px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto;background:#FFEFF3;color:#D98BA4}
+.cb-ic svg{width:16px;height:16px}
+.sec-title .em-ic{width:17px;height:17px;flex:0 0 auto;color:#B08A5C;display:inline-block;vertical-align:-2px}
+.sec-title .em{display:inline-flex;align-items:center}
+.call-big .big-ic{width:19px;height:19px;flex:0 0 auto}
+.call-big .big-ic{stroke:#C05C7E}
+.call-btn .cb-tx{min-width:0;flex:1}
+.cb-name{font-size:12.5px;font-weight:800;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#5B4A3C}
+.cb-num{font-size:10.5px;font-weight:700;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.call-big{
+  width:100%;margin-top:9px;border-radius:20px;padding:14px;display:flex;align-items:center;justify-content:center;gap:9px;
+  background:linear-gradient(150deg,#FFE6EF,#FFEEDF);border:1.5px solid #F7D3DC;
+  font-size:15.5px;font-weight:800;color:#C05C7E;box-shadow:0 5px 16px rgba(230,150,170,.22);text-decoration:none;
+}
+.call-big:active{transform:scale(.98)}
+.call-big .n{font-size:11.5px;font-weight:700;color:#CF8FA5}
+
+/* 알림 */
+.n-item{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:11px 0;border-bottom:1.5px dashed #F2E8D6}
+.n-item:last-of-type{border-bottom:0}
+.n-ic{width:34px;height:34px;border-radius:12px;background:#FFF4DE;display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 auto}
+.n-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.n-title{font-size:13.5px;font-weight:800;line-height:1.32;color:#4B3B2E}
+.n-sub{font-size:11.5px;color:var(--muted);line-height:1.35}
+.n-dot{width:8px;height:8px;border-radius:50%;background:#F487A9;margin-top:7px;flex:0 0 auto}
+.n-item.read{opacity:.6}
+.n-item.read .n-dot{background:#E6DCCC}
+.nrow{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid #EFE3CE;border-radius:15px;padding:10px 12px;background:#FFFDF6;margin-bottom:7px}
+.nrow .box{width:21px;height:21px;border-radius:7px;border:2px solid #D9CDB8;background:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:#fff}
+.nrow .box svg{width:12px;height:12px;opacity:0}
+.nrow.on{background:#F3FBF6;border-color:#CFEBD9}
+.nrow.on .box{background:#4CAF7D;border-color:#4CAF7D}
+.nrow.on .box svg{opacity:1}
+.nrow .nlab{font-size:13.5px;font-weight:800;color:#7C6650}
+.nrow.on .nlab{color:#3E8F68}
+.mem-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.mem-chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:6px 11px;font-size:12px;font-weight:800;background:#fff;border:1.5px solid #EFE3CE;color:#A28C74}
+.mem-chip .dot{width:13px;height:13px;border-radius:5px;border:2px solid #D9CDB8;background:#fff;display:inline-block}
+.mem-chip.on{background:#EAF8EF;border-color:#B9E4C9;color:#3E9E72}
+.mem-chip.on .dot{background:#4CAF7D;border-color:#4CAF7D}
+
+/* 루틴 고정 */
+.filter-row{display:flex;gap:7px;margin-bottom:12px}
+.filter-row button{flex:1;border-radius:15px;padding:9px 6px;font-size:13px;font-weight:800;background:#fff;border:1.5px solid #EFE3CE;color:#9A866D;box-shadow:var(--shadow-sm)}
+.filter-row button.on{background:#FFF4D9;border-color:#F2CF7C;color:#8A6414}
+.chip.pin{background:#FFF0F4;color:#D4708F;border-color:#F8D8E3}
+
+/* 일정 달력 */
+.pcal{background:#fff;border:1.5px solid var(--line);border-radius:24px;padding:12px 12px 14px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.pcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:4px}
+.pcal-dow{text-align:center;font-size:11.5px;font-weight:800;color:var(--muted);padding:5px 0}
+.pcal-dow.sun{color:#D98B9B}
+.pcal-cell{
+  position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  border-radius:50%;font-size:13.5px;font-weight:700;color:#5B4A3C;
+}
+.pcal-cell.empty{visibility:hidden}
+.pcal-cell.sun-n{color:#D98B9B}
+.pcal-cell.today{background:linear-gradient(180deg,#9FD3F2,#7CC1E8);color:#fff;box-shadow:0 3px 10px rgba(120,180,220,.35)}
+.pcal-cell.sel{background:#FFF1C8;box-shadow:inset 0 0 0 1.8px #F0D071}
+.pcal-cell.today.sel{background:linear-gradient(180deg,#9FD3F2,#7CC1E8);box-shadow:0 0 0 2.5px #FFF1C8}
+.pcal-cell i.dot{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:#F487A9}
+.pcal-cell.imp i.dot{width:7px;height:7px;background:#F0B429;box-shadow:0 0 0 2px rgba(255,236,180,.95)}
+.pcal-cell.today i.dot{background:#fff;box-shadow:none}
+.ev-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1.5px dashed #F2E8D6}
+.ev-row:last-child{border-bottom:0}
+.ev-ic{width:34px;height:34px;border-radius:12px;background:#EFF6FD;display:flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+.ev-row.imp .ev-ic{background:#FFF4DE}
+.ev-main{flex:1;min-width:0}
+.ev-line{font-size:14px;font-weight:800;letter-spacing:-.3px;line-height:1.3;word-break:break-word;color:#4B3B2E}
+.ev-sub2{font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:700}
+.ev-btns{display:flex;gap:5px;flex:0 0 auto}
+.mini-btn.star.on{background:#FFF0BE;border-color:#EFCB80}
+
+/* 식사 */
+.mnav{display:flex;gap:7px;margin-bottom:12px}
+.mnav button{flex:1;border-radius:15px;padding:9px 4px;font-size:13px;font-weight:800;background:#fff;border:1.5px solid #E7E1D2;color:#9A866D;box-shadow:var(--shadow-sm)}
+.mnav button.on{background:#FFF4D9;border-color:#F2CF7C;color:#8A6414}
+.meal-day{background:linear-gradient(160deg,#F5FAFF,#EFF8F4);border:1.5px solid #DCEBF5;border-radius:24px;padding:14px 13px;box-shadow:var(--shadow-sm);margin-bottom:14px}
+.meal-day-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:6px}
+.meal-day-t{font-size:15.5px;font-weight:800;letter-spacing:-.3px}
+.menu-item{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1.5px dashed #E3EDEA}
+.menu-item:last-of-type{border-bottom:0}
+.menu-item .mck{width:26px;height:26px;border-radius:9px;border:2px solid #D9CDB8;background:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+.menu-item .mck svg{width:13px;height:13px;opacity:0}
+.menu-item.on .mck{background:#4CAF7D;border-color:#4CAF7D}
+.menu-item.on .mck svg{opacity:1}
+.menu-item .mtx{flex:1;min-width:0;font-size:14.5px;font-weight:700;word-break:break-word;line-height:1.35}
+.menu-item.on .mtx{color:#3E7F5F;text-decoration:none}
+.alg{flex:0 0 auto;border-radius:999px;padding:3px 9px;font-size:11px;font-weight:800;background:#FFF4D9;border:1.2px solid #F1DFAE;color:#A8791D;white-space:nowrap}
+.alg.none{background:#FFF1F5;border-color:#F8D8E3;color:#D48AA3}
+.m-count{text-align:center;font-size:13px;font-weight:800;color:#4C90C9;margin:12px 0 10px}
+.meal-note{width:100%;border:1.5px solid #E3EAF0;border-radius:14px;padding:11px 13px;background:#fff;font-size:13.5px;margin-top:10px}
+.alg-tools{display:flex;gap:7px;margin-top:9px}
+.alg-tools button{flex:1;border-radius:14px;padding:10px 6px;font-size:12.5px;font-weight:800;background:#fff;border:1.5px solid #DCE9F4;color:#5E8CAF}
+.alg-legend{margin-top:10px;background:#F7FBFF;border:1.5px solid #E1EEF9;border-radius:14px;padding:10px 12px;font-size:11.5px;line-height:1.75;color:#4E7C9E}
+.meal-edit-row{display:flex;gap:6px;align-items:center;margin-bottom:7px}
+.meal-edit-row .input{padding:10px;font-size:13.5px}
+.meal-edit-row .me-t{flex:1 1 auto;min-width:0}
+.meal-edit-row .me-a{flex:0 0 74px;width:74px;text-align:center}
+
+/* 데이터 보호 */
+.protect-box{margin-top:14px;border:1.5px solid #F1E6D2;border-radius:22px;background:#FFFCF4;padding:13px}
+.prow{display:flex;align-items:center;gap:10px;padding:9px 0}
+.prow + .prow{border-top:1.5px dashed #F2E8D6}
+.p-l{flex:1;min-width:0}
+.p-t{font-size:13.5px;font-weight:800;color:#5B4A3C}
+.p-s{font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.4}
+.p-b{flex:0 0 auto;border-radius:13px;border:1.5px solid #EFE3CE;background:#fff;padding:9px 12px;font-size:12.5px;font-weight:800;color:#8E7A61;box-shadow:var(--shadow-sm)}
+.pw-btn{width:100%;border-radius:16px;padding:13px;font-size:13.5px;font-weight:800;background:linear-gradient(180deg,#FFF6F9,#FFEFF4);border:1.5px solid #F6D8E1;color:#C05C7E;margin-top:2px}
+.pw-btn.on{background:linear-gradient(180deg,#E9F8F0,#DFF4E8);border-color:#B9E4C9;color:#2E8F63}
+.call-log-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1.5px dashed #F2E8D6;font-size:12.5px}
+.call-log-row:last-of-type{border-bottom:0}
+.call-log-row .cl-w{font-weight:800;color:#5B4A3C}
+.call-log-row .cl-n{color:var(--muted)}
+.call-log-row .cl-t{color:var(--muted2);font-size:11px;margin-left:auto;white-space:nowrap}
+
+/* 잠금 화면 */
+.lockscreen{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:radial-gradient(120% 60% at 50% -10%,#FFF6D9 0,rgba(255,246,217,0) 60%),linear-gradient(170deg,#FFFDF5,#FFF6EA 55%,#FFEFF4)}
+.lock-card{width:100%;max-width:320px;background:rgba(255,255,255,.9);border:1.5px solid #F3E6D8;border-radius:28px;box-shadow:var(--shadow);padding:22px 20px;text-align:center}
+.lock-card .lk-av{width:74px;height:74px;margin:0 auto 10px;display:block}
+.lock-card h2{font-family:var(--font-title);font-size:21px;font-weight:400;letter-spacing:-.5px;margin-bottom:3px;color:#5B4A3C}
+.lock-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:4px 0 16px}
+.pin-dots i{width:14px;height:14px;border-radius:50%;background:#F2E8DA;border:1.5px solid #E6D8C6;transition:all .15s ease}
+.pin-dots i.on{background:#F487A9;border-color:#F487A9;transform:scale(1.08)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pin-pad button{padding:13px 0;border-radius:16px;background:#fff;border:1.5px solid #F0E4D3;font-size:19px;font-weight:800;color:#5B4A3C;box-shadow:var(--shadow-sm)}
+.pin-pad button:active{background:#FFF4E1}
+.pin-pad button.ghost{font-size:12.5px;color:#B3A18C}
+.lock-hint{font-size:11.5px;color:#B3A18C;margin-top:12px;line-height:1.5}
+.lock-forgot{margin-top:10px;font-size:11.5px;color:#C0AE99;text-decoration:underline}
+.shake{animation:shake .32s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+/* 좁은 화면에서도 제목·공유·알림·설정 버튼이 한 줄에 들어오게 */
 @media (max-width:430px){
-  .brand h1{font-size:22px}
-  .share-btn{font-size:13px;padding:0 11px}
+  .brand h1{font-size:20px}
+  .brand .mark{width:34px;height:34px}
+  .top-actions{gap:6px}
+  .icon-btn{width:42px;height:42px}
+  .icon-btn svg{width:19px;height:19px}
+  .share-btn{height:42px;font-size:12px;padding:0 9px;gap:4px}
+  .clock{font-size:35px}
 }
 @media (max-width:365px){
-  .brand .mark{width:34px;height:34px}
-  .brand h1{font-size:20px}
-  .icon-btn{width:42px;height:42px}
-  .share-btn{height:42px;font-size:12.5px;padding:0 10px;gap:4px}
+  .brand .mark{width:30px;height:30px}
+  .brand{gap:6px}
+  .brand h1{font-size:17.5px}
+  .icon-btn{width:38px;height:38px}
+  .icon-btn svg{width:17px;height:17px}
+  .share-btn{height:38px;font-size:11.5px;padding:0 8px;gap:3px}
+  .share-btn .s-ic{font-size:13px}
+  .top-actions{gap:5px}
+  .clock{font-size:31px}
+  .status-card{flex:0 0 52%}
 }
 </style>
 </head>
@@ -504,6 +736,10 @@ textarea.share-area{
     </div>
     <div class="top-actions">
       <button class="share-btn" data-act="share" aria-label="카톡 공유"><span class="s-ic">💬</span>카톡공유</button>
+      <button class="icon-btn" data-act="notifCenter" aria-label="알림" title="알림">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#B08A5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.4a6 6 0 1 0-12 0c0 5.2-2 6.8-2 6.8h16s-2-1.6-2-6.8Z"/><path d="M13.7 19a2 2 0 0 1-3.4 0"/></svg>
+        <span class="badge" id="notifBadge" hidden></span>
+      </button>
       <button class="icon-btn" data-act="settings" aria-label="설정">
         <svg viewBox="0 0 24 24" fill="none" stroke="#8C7A66" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.11a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.11A1.7 1.7 0 0 0 4.66 8.9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.11a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.11a1.7 1.7 0 0 0-1.49 1z"/></svg>
       </button>
@@ -640,7 +876,21 @@ var DEFAULTS = {
   health: {},
   praise: [],
   memos: [],
-  ui: { routineKid:'haram', moneyKid:'haram', praiseTo:'haram', praiseSticker:'⭐', memoWho:'haram' }
+  /* --- v4 --- */
+  status: {},
+  phones: { haram:'', isol:'', dad:'', mom:'' },
+  calls: [],
+  notif: {
+    read: {},
+    settings: { event30:false, medicine:false, pickup:false, routine:true, message:true, praise:true, dinner:false },
+    members: { haram:true, isol:true, dad:true, mom:true }
+  },
+  security: { pin:'', hint:'', kidLock:false },
+  planCal: { offset:0, sel:'' },
+  mealDate: '',
+  bannerClosed: false,
+  savedAt: 0,
+  ui: { routineKid:'haram', moneyKid:'haram', praiseTo:'haram', praiseSticker:'⭐', memoWho:'haram', routineFilter:'all', algOpen:false }
 };
 
 var S = null;
@@ -679,12 +929,16 @@ function load(){
 function mergeDefaults(p){
   var s = freshState();
   if (!p || typeof p !== 'object') return s;
-  ['todos','routines','checks','allowance','mission','meals','events','health','praise','memos','ui'].forEach(function(k){
+  ['todos','routines','checks','allowance','mission','meals','events','health','praise','memos','ui',
+   'status','phones','calls','notif','security','planCal'].forEach(function(k){
     if (p[k] && typeof p[k] === 'object') s[k] = p[k];
   });
   if (p.tab) s.tab = p.tab;
   if (p.reward != null && +p.reward > 0) s.reward = Math.round(+p.reward);
   if (!(s.reward > 0)) s.reward = REWARD_DEFAULT;
+  if (typeof p.bannerClosed === 'boolean') s.bannerClosed = p.bannerClosed;
+  if (typeof p.mealDate === 'string') s.mealDate = p.mealDate;
+  if (+p.savedAt > 0) s.savedAt = +p.savedAt;
   // guarantee all four members exist in todos
   MEMBERS.forEach(function(m){
     if (!Array.isArray(s.todos[m.id])) s.todos[m.id] = [];
@@ -696,7 +950,61 @@ function mergeDefaults(p){
     if (!Array.isArray(s.allowance[m.id].deposit)) s.allowance[m.id].deposit = [];
     if (!Array.isArray(s.allowance[m.id].spend)) s.allowance[m.id].spend = [];
   });
+  /* --- v4 migration --- */
+  if (!s.ui) s.ui = {};
+  if (!s.ui.routineFilter) s.ui.routineFilter = 'all';
+  if (typeof s.ui.algOpen !== 'boolean') s.ui.algOpen = false;
+  if (!s.status || typeof s.status !== 'object') s.status = {};
+  if (!s.phones || typeof s.phones !== 'object') s.phones = {};
+  MEMBERS.forEach(function(m){ if (typeof s.phones[m.id] !== 'string') s.phones[m.id] = ''; });
+  if (!Array.isArray(s.calls)) s.calls = [];
+  if (!s.notif || typeof s.notif !== 'object') s.notif = {};
+  if (!s.notif.read || typeof s.notif.read !== 'object') s.notif.read = {};
+  if (!s.notif.settings || typeof s.notif.settings !== 'object') s.notif.settings = {};
+  for (var nk in DEFAULTS.notif.settings){
+    if (typeof s.notif.settings[nk] !== 'boolean') s.notif.settings[nk] = DEFAULTS.notif.settings[nk];
+  }
+  if (!s.notif.members || typeof s.notif.members !== 'object') s.notif.members = {};
+  MEMBERS.forEach(function(m){ if (typeof s.notif.members[m.id] !== 'boolean') s.notif.members[m.id] = true; });
+  if (!s.security || typeof s.security !== 'object') s.security = { pin:'', hint:'', kidLock:false };
+  if (typeof s.security.pin !== 'string') s.security.pin = '';
+  if (typeof s.security.hint !== 'string') s.security.hint = '';
+  if (typeof s.security.kidLock !== 'boolean') s.security.kidLock = false;
+  if (!s.planCal || typeof s.planCal !== 'object') s.planCal = { offset:0, sel:'' };
+  if (typeof s.planCal.offset !== 'number') s.planCal.offset = 0;
+  if (typeof s.planCal.sel !== 'string') s.planCal.sel = '';
+  /* 예전 식사 기록(아침·점심·저녁 글)을 메뉴 목록으로 옮겨 담습니다. */
+  if (s.meals && typeof s.meals === 'object'){
+    Object.keys(s.meals).forEach(function(k){ s.meals[k] = normalizeMealDay(s.meals[k]); });
+  }
+  (s.events || []).forEach(function(e){
+    if (e.endDate && (!e.date || e.endDate < e.date)) e.endDate = e.date || '';
+    if (typeof e.important !== 'boolean') e.important = !!e.important;
+  });
+  (s.routines ? Object.keys(s.routines) : []).forEach(function(k){
+    (s.routines[k] || []).forEach(function(it){ if (typeof it.pinned !== 'boolean') it.pinned = !!it.pinned; });
+  });
   return s;
+}
+
+/* 예전 meals[날짜] = {breakfast,lunch,dinner} → {items:[], memo} */
+function normalizeMealDay(day){
+  if (!day || typeof day !== 'object') return { items: [], memo: '' };
+  if (Array.isArray(day.items)){
+    return { items: day.items.map(function(it){
+      return { id: (it && it.id) || uid(), text: (it && it.text) || '', allergy: (it && it.allergy) || '', checked: !!(it && it.checked) };
+    }), memo: typeof day.memo === 'string' ? day.memo : '' };
+  }
+  var items = [], seen = false;
+  ['breakfast','lunch','dinner'].forEach(function(k){
+    var v = day[k];
+    if (v && String(v).trim()){
+      seen = true;
+      var label = k === 'breakfast' ? '아침' : (k === 'lunch' ? '점심' : '저녁');
+      items.push({ id: uid(), text: label + ' · ' + String(v).trim(), allergy:'', checked: true });
+    }
+  });
+  return { items: items, memo: seen ? '' : (typeof day.memo === 'string' ? day.memo : '') };
 }
 var saveTimer = null;
 function save(){
@@ -704,10 +1012,11 @@ function save(){
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(function(){
     saveTimer = null;
+    S.savedAt = Date.now();
     writeRaw(JSON.stringify(S));
   }, 60);
 }
-function saveNow(){ writeRaw(JSON.stringify(S)); }
+function saveNow(){ if (S) S.savedAt = Date.now(); writeRaw(JSON.stringify(S)); }
 
 /* ---------------- cute chihuahua characters (inline SVG) ---------------- */
 var PALETTE = {
@@ -862,6 +1171,7 @@ function openModal(html, opts){
 function closeModal(){
   document.getElementById('modalRoot').innerHTML = '';
   document.body.style.overflow = '';
+  if (pinMode === 'adult'){ pinMode = 'unlock'; pinBuf = ''; }
 }
 
 /* ---------------- derived data ---------------- */
@@ -956,6 +1266,7 @@ function render(){
              health:renderHealth, praise:renderPraise, money:renderMoney, memo:renderMemo }[S.tab] || renderHome;
   v.innerHTML = fn();
   if (window.scrollY !== y) window.scrollTo(0, y);
+  paintBadge();
   save();
 }
 
@@ -971,6 +1282,11 @@ function renderHome(){
   var today = new Date();
   var prog = allTodosProgress();
   var h = '';
+
+  h += heroBanner();
+  h += clockBlock();
+  h += statusSection();
+  h += callSection();
 
   // 오늘 요약
   h += '<section class="card yellow" style="padding:12px 14px;margin-bottom:12px">' +
@@ -1001,6 +1317,90 @@ function renderHome(){
   MEMBERS.forEach(function(m){ h += todoBlock(m); });
   h += '</section>';
   return h;
+}
+
+/* 인사 배너 (접기 / 펼치기) */
+var CUSHION = { haram:'#FFC9DC', isol:'#FFDDB4', dad:'#C7DFF7', mom:'#FFD9C2' };
+function heroBanner(){
+  if (S.bannerClosed){
+    return '<div class="hero closed"><div class="hero-compact">' +
+      '<span class="hc-avs">' + MEMBERS.map(function(m){ return '<span class="av">' + avatarSVG(m.avatar) + '</span>'; }).join('') + '</span>' +
+      '<span class="hc-tx">우리 가족, 오늘도 함께 🐾</span>' +
+      '<button class="hero-toggle" data-act="bannerToggle">펼치기 ▾</button>' +
+    '</div></div>';
+  }
+  var h = '<div class="hero"><div class="hero-friends">';
+  MEMBERS.forEach(function(m){
+    h += '<div class="hero-friend">' +
+      '<span class="av">' + avatarSVG(m.avatar) + '</span>' +
+      '<span class="cushion" style="background:radial-gradient(60% 100% at 50% 0%,' + CUSHION[m.id] + ',#F5B9C9)"></span>' +
+    '</div>';
+  });
+  h += '</div><div class="hero-foot">' +
+    '<span class="hero-cap">🐾 우리 가족, 오늘도 함께</span>' +
+    '<button class="hero-toggle" data-act="bannerToggle">접기 ▴</button></div></div>';
+  return h;
+}
+
+function clockBlock(){
+  var d = new Date();
+  return '<div class="clock-row">' +
+    '<div class="clock" id="liveClock">' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()) + '</div>' +
+    '<div class="clock-date" id="liveDate">' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 ' + weekdayKR(d) + '요일</div>' +
+  '</div>';
+}
+
+function statusSection(){
+  var h = '<section class="card" style="padding:13px 12px 7px">' +
+    '<div class="sec-head"><div class="sec-title"><span class="em">👀</span>가족 상태</div>' +
+      '<span class="pill soft-mint">지금</span></div>' +
+    '<p class="sec-sub">지금 어디 있는지 알려 주면 서로 안심돼요</p>' +
+    '<div class="status-scroll">';
+  MEMBERS.forEach(function(m){
+    var st = statusOf(m.id);
+    h += '<div class="status-card st-' + m.tone + '">' +
+      '<div class="st-head"><span class="av">' + avatarSVG(m.avatar) + '</span>' +
+        '<div style="min-width:0"><div class="st-name">' + m.title + '</div>' +
+        '<div class="st-time" id="stTime-' + m.id + '">' + relTime(st.ts) + '</div></div></div>' +
+      '<div class="st-pill"><span class="e">' + st.emoji + '</span><span>' + esc(st.text) + '</span></div>' +
+      '<button class="st-btn" data-act="statusChange" data-m="' + m.id + '">상태 바꾸기</button>' +
+    '</div>';
+  });
+  h += '</div></section>';
+  return h;
+}
+
+function callSection(){
+  var saved = MEMBERS.filter(function(m){ return teleNum(m.id); });
+  var h = '<section class="card" style="padding:14px 13px">' +
+    '<div class="sec-head"><div class="sec-title"><span class="em">' + phoneSVG('em-ic') + '</span>지금 바로 연락</div></div>' +
+    '<p class="sec-sub">' + (saved.length ? '누르면 가족 전용 전화가 열려요' : '전화번호를 먼저 저장하면 바로 걸 수 있어요') + '</p>' +
+    '<div class="call-grid">';
+  MEMBERS.forEach(function(m){ h += callButton(m); });
+  h += '</div>';
+  if (saved.length){
+    var f = saved[0];
+    h += '<a class="call-big" href="tel:' + teleNum(f.id) + '" data-act="callLog" data-m="' + f.id + '">' +
+      phoneSVG('big-ic') + ' ' + f.title + '에게 전화 <span class="n">' + esc(S.phones[f.id]) + '</span></a>';
+  }
+  h += '</section>';
+  return h;
+}
+
+function callButton(m){
+  var num = (S.phones || {})[m.id] || '';
+  if (!num){
+    return '<button class="call-btn" data-act="phoneSetup" data-m="' + m.id + '">' +
+      '<span class="cb-ic">' + phoneSVG() + '</span><span class="cb-tx"><span class="cb-name">' + m.title + '에게 전화</span>' +
+      '<span class="cb-num">번호 저장하기</span></span></button>';
+  }
+  return '<a class="call-btn" href="tel:' + teleNum(m.id) + '" data-act="callLog" data-m="' + m.id + '">' +
+    '<span class="cb-ic">' + phoneSVG() + '</span><span class="cb-tx"><span class="cb-name">' + m.title + '에게 전화</span>' +
+    '<span class="cb-num">' + esc(num) + '</span></span></a>';
+}
+function phoneSVG(cls){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="' + (cls || '') + '">' +
+    '<path d="M15.6 21A13.6 13.6 0 0 1 3 8.4V6a2 2 0 0 1 2-2h2.2a1 1 0 0 1 1 .8l.9 3.3a1 1 0 0 1-.5 1.1L7 10.4a10.6 10.6 0 0 0 6.6 6.6l1.2-1.6a1 1 0 0 1 1.1-.4l3.3.9a1 1 0 0 1 .8 1V19a2 2 0 0 1-2 2Z"/></svg>';
 }
 
 function memberCard(m){
@@ -1096,31 +1496,42 @@ function renderRoutine(){
   var done = routineDoneCount(kid);
   var total = items.length;
   var pct = total ? Math.round(done / total * 100) : 0;
+  var filter = S.ui.routineFilter || 'all';
+  var pinnedCount = items.filter(function(it){ return it.pinned; }).length;
 
   var sorted = items.map(function(it, i){ return { it: it, i: i }; })
     .sort(function(a, b){ return (b.it.pinned ? 1 : 0) - (a.it.pinned ? 1 : 0) || a.i - b.i; })
     .map(function(x){ return x.it; });
+  if (filter === 'pinned') sorted = sorted.filter(function(it){ return it.pinned; });
 
   var h = switchPills('routineKid', kid);
   h += '<section class="card">' +
     '<div class="routine-head"><span class="av">' + avatarSVG(m.avatar) + '</span>' +
-      '<div style="flex:1"><div class="rh-name">' + m.title + '</div><div class="rh-prog">' + done + '/' + total + '개 완료</div></div>' +
+      '<div style="flex:1;min-width:0"><div class="rh-name">' + m.title + ' 루틴</div>' +
+        '<div class="rh-prog">' + done + '/' + total + '개 완료 · 📌 고정 ' + pinnedCount + '개</div></div>' +
       '<span class="pill soft-yellow">🐷 ' + won(routineEarnedOn(kid)) + '</span></div>' +
     '<div class="bar pink"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="filter-row">' +
+      '<button class="' + (filter === 'all' ? 'on' : '') + '" data-act="routineFilter" data-v="all">전체 ' + total + '개</button>' +
+      '<button class="' + (filter === 'pinned' ? 'on' : '') + '" data-act="routineFilter" data-v="pinned">📌 고정 루틴 ' + pinnedCount + '개</button>' +
+    '</div>' +
     '<ul class="routine-list">';
 
   if (!sorted.length){
-    h += '<li class="empty">아직 루틴이 없어요<br>아래 버튼으로 오늘의 루틴을 추가해요</li>';
+    h += '<li class="empty">' + (filter === 'pinned'
+      ? '고정 루틴이 없어요<br>루틴 오른쪽 📌를 누르면 매일 챙기는 루틴으로 표시돼요'
+      : '아직 루틴이 없어요<br>아래 버튼으로 오늘의 루틴을 추가해요') + '</li>';
   }
   sorted.forEach(function(it){
     var on = !!checksOf(kid)[it.id];
     h += '<li class="ritem' + (on ? ' done' : '') + '">' +
       '<button class="chk blue' + (on ? ' on' : '') + '" data-act="routineToggle" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="완료 체크">' + checkMark() + '</button>' +
       '<div class="rtext" data-act="routineToggle" data-kid="' + kid + '" data-id="' + it.id + '">' + esc(it.text) +
-        '<div class="meta">' + (it.note ? '<span class="chip">' + esc(it.note) + '</span>' : '') +
+        '<div class="meta">' + (it.pinned ? '<span class="chip pin">📌 고정</span>' : '') +
+        (it.note ? '<span class="chip">' + esc(it.note) + '</span>' : '') +
         '<span class="chip money">🪙 ' + won(rewardAmt()) + '</span></div></div>' +
       '<div class="btns">' +
-        '<button class="mini-btn pin' + (it.pinned ? ' on' : '') + '" data-act="routinePin" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="고정">📌</button>' +
+        '<button class="mini-btn pin' + (it.pinned ? ' on' : '') + '" data-act="routinePin" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="고정" aria-pressed="' + (it.pinned ? 'true' : 'false') + '">📌</button>' +
         '<button class="mini-btn" data-act="routineEdit" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="수정">✏️</button>' +
         '<button class="mini-btn del" data-act="routineDel" data-kid="' + kid + '" data-id="' + it.id + '" aria-label="삭제">✕</button>' +
       '</div></li>';
@@ -1215,72 +1626,182 @@ function renderMoney(){
 }
 
 /* ---------------- 식사 ---------------- */
+var ALLERGY_LEGEND = '1.난류 · 2.우유 · 3.메밀 · 4.땅콩 · 5.대두 · 6.밀 · 7.고등어 · 8.게 · 9.새우 · 10.돼지고기 · 11.복숭아 · 12.토마토 · 13.아황산류 · 14.호두 · 15.닭고기 · 16.쇠고기 · 17.오징어 · 18.조개류 · 19.잣';
+function mealKey(){ return S.mealDate || todayKey(); }
+function mealDayObj(k){
+  if (!S.meals[k]) S.meals[k] = { items: [], memo: '' };
+  var d = S.meals[k];
+  if (!d || !Array.isArray(d.items) || typeof d.memo !== 'string'){
+    S.meals[k] = d = normalizeMealDay(d);
+  }
+  return d;
+}
 function renderMeal(){
-  var key = todayKey();
-  var day = S.meals[key] || {};
-  var d = new Date();
-  var h = '<section class="card yellow" style="padding:14px">' +
-    '<div class="sec-title"><span class="em">🍚</span>오늘의 식사</div>' +
-    '<p class="sec-sub">' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 ' + weekdayKR(d) + '요일 · 먹은 메뉴를 적어 두면 가족이 다 봐요</p>';
-  var meals = [
-    { k:'breakfast', name:'아침', icon:'🌅', em:'b' },
-    { k:'lunch', name:'점심', icon:'☀️', em:'l' },
-    { k:'dinner', name:'저녁', icon:'🌙', em:'d' }
-  ];
-  meals.forEach(function(m){
-    var val = day[m.k] || '';
-    h += '<div class="meal-card"><div class="meal-icon ' + m.em + '">' + m.icon + '</div>' +
-      '<div class="meal-body"><div class="meal-name">' + m.name + '</div>' +
-      '<input class="meal-input" type="text" value="' + esc(val) + '" placeholder="무엇을 먹었나요?" data-act="mealInput" data-k="' + m.k + '">' +
-      '</div></div>';
-  });
-  h += '<button class="btn block" data-act="mealSave" style="margin-top:4px">오늘 식사 저장하기</button></section>';
+  var k = mealKey();
+  var day = mealDayObj(k);
+  var d = fromKey(k);
+  var isToday = k === todayKey();
+  var items = day.items;
+  var done = items.filter(function(it){ return it.checked; }).length;
 
-  // 이번 주 기록
-  h += '<section class="card"><div class="ledger-title">🗓 이번 주 식사 기록</div>';
+  var h = '<div class="mnav">' +
+    '<button data-act="mealGo" data-d="-1">◀ 어제</button>' +
+    '<button class="' + (isToday ? 'on' : '') + '" data-act="mealGo" data-d="0">오늘</button>' +
+    '<button data-act="mealGo" data-d="1">내일 ▶</button></div>';
+
+  h += '<section class="meal-day">' +
+    '<div class="meal-day-head"><span class="meal-day-t">' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 ' + weekdayKR(d) + '요일</span>' +
+      '<span class="pill soft-blue" style="padding:3px 9px;font-size:11px">' + (isToday ? '오늘 식단' : '식단') + '</span>' +
+      (isToday ? '' : '<button class="mini-btn" style="width:26px;height:26px;font-size:11px" data-act="mealGo" data-d="0" aria-label="오늘로">↺</button>') +
+    '</div>';
+
+  if (!items.length){
+    h += '<div class="empty" style="padding:16px 6px">' + (isToday ? '오늘' : '이날') + ' 식단이 아직 없어요<br>아래 “메뉴 편집”으로 메뉴를 적어 보세요</div>';
+  } else {
+    items.forEach(function(it){
+      h += '<div class="menu-item' + (it.checked ? ' on' : '') + '">' +
+        '<button class="mck" data-act="mealToggle" data-id="' + it.id + '" aria-label="먹었어요">' + checkMark() + '</button>' +
+        '<span class="mtx" data-act="mealToggle" data-id="' + it.id + '">' + esc(it.text) + '</span>' +
+        (it.allergy ? '<span class="alg">' + esc(it.allergy) + '</span>' : '<span class="alg none">선택</span>') +
+      '</div>';
+    });
+    h += '<div class="m-count">' + done + '/' + items.length + '개 먹었어요</div>' +
+      '<button class="btn main block" data-act="mealAll">' + (done === items.length ? '✅ 다 먹었어요!' : '전체 다 먹었어요!') + '</button>';
+  }
+
+  h += '<input class="meal-note" type="text" value="' + esc(day.memo || '') + '" placeholder="한 줄 메모 (예: 국만 남김)" data-act="mealMemo">' +
+    '<div class="alg-tools">' +
+      '<button data-act="algToggle">' + (S.ui.algOpen ? '🙈 알레르기 번호 숨기기' : '🐶 알레르기 번호 보기') + '</button>' +
+      '<button data-act="mealEdit">✏️ 메뉴 편집</button>' +
+    '</div>' +
+    (S.ui.algOpen ? '<div class="alg-legend">' + ALLERGY_LEGEND + '</div>' : '') +
+    '</section>';
+
+  /* 최근 기록 */
+  h += '<section class="card"><div class="ledger-title">🗓 최근 식사 기록</div>';
   var rows = 0;
   for (var i = 0; i < 7; i++){
     var dd = addDays(new Date(), -i);
     var kk = dateKey(dd);
     var dayd = S.meals[kk];
-    if (!dayd) continue;
-    var bits = [];
-    if (dayd.breakfast) bits.push('아침 ' + dayd.breakfast);
-    if (dayd.lunch) bits.push('점심 ' + dayd.lunch);
-    if (dayd.dinner) bits.push('저녁 ' + dayd.dinner);
-    if (!bits.length) continue;
+    if (!dayd || !dayd.items || !dayd.items.length) continue;
     rows++;
     h += '<div class="wm-row"><span class="wm-d">' + (dd.getMonth()+1) + '/' + dd.getDate() + ' ' + weekdayKR(dd) + '</span>' +
-      '<span class="wm-t">' + esc(bits.join(' · ')) + '</span></div>';
+      '<span class="wm-t">' + esc(dayd.items.map(function(it){ return it.text; }).join(' · ')) + '</span></div>';
   }
-  if (!rows) h += '<div class="empty">아직 기록이 없어요</div>';
+  if (!rows) h += '<div class="empty">며칠 적으면 여기에 식사 기록이 모여요</div>';
   h += '</section>';
   return h;
 }
 
 /* ---------------- 일정 ---------------- */
-function renderPlan(){
-  var key = todayKey();
-  var evs = (S.events || []).slice().sort(function(a, b){
-    return (a.date + (a.time || '')) < (b.date + (b.time || '')) ? -1 : 1;
+/* 날짜 범위(startDate ~ endDate)에 걸린 일정만 골라 내기 */
+function eventEnd(e){ return (e.endDate && e.endDate >= e.date) ? e.endDate : e.date; }
+function eventsOn(k){
+  return (S.events || []).filter(function(e){
+    return e.date && e.date <= k && k <= eventEnd(e);
   });
-  var upcoming = evs.filter(function(e){ return e.date >= key; });
-  var past = evs.filter(function(e){ return e.date < key; }).reverse().slice(0, 6);
+}
+function upcomingEvents(n){
+  var key = todayKey();
+  return (S.events || []).filter(function(e){ return eventEnd(e) >= key && e.date; })
+    .sort(function(a, b){
+      return (a.date + (a.time || '')) < (b.date + (b.time || '')) ? -1 : 1;
+    }).slice(0, n || 20);
+}
+function renderPlan(){
+  var cal = S.planCal || (S.planCal = { offset:0, sel:'' });
+  var base = new Date();
+  base.setDate(1);
+  base.setMonth(base.getMonth() + (cal.offset || 0));
+  var y = base.getFullYear(), mo = base.getMonth();
+  var first = new Date(y, mo, 1);
+  var startPad = first.getDay();               /* 일요일부터 시작 */
+  var last = new Date(y, mo + 1, 0).getDate();
+  var key = todayKey();
+
+  var cells = '';
+  ['일','월','화','수','목','금','토'].forEach(function(dw, i){
+    cells += '<div class="pcal-dow' + (i === 0 ? ' sun' : '') + '">' + dw + '</div>';
+  });
+  for (var p = 0; p < startPad; p++) cells += '<div class="pcal-cell empty"></div>';
+  for (var day = 1; day <= last; day++){
+    var k = y + '-' + pad(mo + 1) + '-' + pad(day);
+    var dayEvents = eventsOn(k);
+    var imp = dayEvents.some(function(e){ return e.important; });
+    var dow = new Date(y, mo, day).getDay();
+    cells += '<button class="pcal-cell' + (k === key ? ' today' : '') + (k === cal.sel ? ' sel' : '') +
+      (imp ? ' imp' : '') + (dow === 0 && k !== key ? ' sun-n' : '') + '" data-act="planPick" data-d="' + k + '">' +
+      day + (dayEvents.length ? '<i class="dot"></i>' : '') + '</button>';
+  }
 
   var h = '<section class="card" style="padding:14px">' +
     '<div class="sec-head"><div class="sec-title"><span class="em">🗓</span>가족 일정</div>' +
-    '<button class="btn" data-act="eventAdd" style="padding:9px 13px;font-size:13px;border-radius:14px">+ 일정 추가</button></div>' +
-    '<p class="sec-sub">학교 행사, 병원, 약속을 한 곳에 모아 둬요</p>';
-  if (!upcoming.length) h += '<div class="empty">다가오는 일정이 없어요<br>+ 일정 추가로 첫 일정을 적어 보세요</div>';
-  upcoming.forEach(function(e){ h += eventRow(e, true); });
+      '<button class="btn" data-act="eventAdd" style="padding:9px 13px;font-size:13px;border-radius:14px">+ 일정 추가</button></div>' +
+    '<p class="sec-sub">생일, 병원, 여행, 학교 일정을 기록해요</p>' +
+    '<div class="pcal">' +
+      '<div class="cal-head"><button data-act="planPrev" aria-label="이전 달">' + icon('chevL') + '</button>' +
+        '<div class="cal-month">' + y + '년 ' + (mo + 1) + '월</div>' +
+        '<button data-act="planNext" aria-label="다음 달">' + icon('chevR') + '</button></div>' +
+      '<div class="pcal-grid">' + cells + '</div>' +
+    '</div>';
+
+  var sel = cal.sel;
+  var list = sel ? eventsOn(sel) : upcomingEvents(6);
+  var listTitle = sel
+    ? (fromKey(sel).getMonth() + 1) + '월 ' + fromKey(sel).getDate() + '일 일정' + (list.length ? ' ' + list.length + '개' : '')
+    : '다가오는 일정';
+  if (!sel && !list.length) listTitle = '등록된 일정';
+  h += '<div class="sec-head" style="margin-top:6px"><div class="sec-title" style="font-size:15px"><span class="em">📌</span>' + listTitle + '</div>' +
+    (sel ? '<button class="mini-btn" style="width:auto;padding:0 9px;font-size:11.5px" data-act="planPick" data-d="" aria-label="전체 보기">전체</button>' : '') + '</div>';
+  if (!list.length){
+    h += '<div class="empty">' + (sel ? '이날은 일정이 없어요' : '아직 등록된 일정이 없어요<br>+ 일정 추가로 첫 일정을 적어 보세요') + '</div>';
+  }
+  list.forEach(function(e){ h += planRow(e); });
   h += '</section>';
 
-  if (past.length){
-    h += '<section class="card"><div class="ledger-title">🕰 지난 일정</div>';
-    past.forEach(function(e){ h += eventRow(e, false); });
-    h += '</section>';
-  }
   return h;
+}
+
+function planRow(e){
+  var s = fromKey(e.date);
+  var en = e.endDate ? fromKey(e.endDate) : null;
+  var range = (s.getMonth()+1) + '.' + s.getDate() + (en ? ' ~ ' + (en.getMonth()+1) + '.' + en.getDate() : '');
+  var meta = [];
+  if (e.time) meta.push('🕐 ' + e.time);
+  meta.push(e.who ? memberById(e.who).title : '온 가족');
+  var dd = ddayLabel(e.date);
+  if (dd) meta.push(dd);
+  return '<div class="ev-row' + (e.important ? ' imp' : '') + '">' +
+    '<span class="ev-ic">' + (e.important ? '📌' : '🗓') + '</span>' +
+    '<div class="ev-main"><div class="ev-line">' + range + ' · ' + esc(e.title) + '</div>' +
+      '<div class="ev-sub2">' + esc(meta.join(' · ')) + '</div>' +
+      (e.note ? '<div class="ev-note">' + esc(e.note) + '</div>' : '') + '</div>' +
+    '<span class="ev-btns">' +
+      '<button class="mini-btn star' + (e.important ? ' on' : '') + '" data-act="eventStar" data-id="' + e.id + '" aria-label="중요 표시" aria-pressed="' + (e.important ? 'true' : 'false') + '">⭐</button>' +
+      '<button class="mini-btn" data-act="eventEdit" data-id="' + e.id + '" aria-label="수정">✏️</button>' +
+      '<button class="mini-btn del" data-act="eventDel" data-id="' + e.id + '" aria-label="삭제">✕</button>' +
+    '</span></div>';
+}
+
+function eventRow(e, upcoming){
+  var d = fromKey(e.date);
+  var diff = Math.round((fromKey(e.date) - fromKey(todayKey())) / 86400000);
+  var dday = '';
+  if (diff === 0) dday = '<span class="ev-dday today">오늘</span>';
+  else if (diff > 0) dday = '<span class="ev-dday">D-' + diff + '</span>';
+  var who = e.who ? memberById(e.who) : null;
+  return '<div class="event">' +
+    '<div class="ev-date"><div class="m">' + (d.getMonth()+1) + '월</div><div class="dd">' + d.getDate() + '</div></div>' +
+    '<div class="ev-body"><div class="ev-title">' + esc(e.title) + ' ' + dday + '</div>' +
+      '<div class="ev-meta">' + (e.time ? '<span>🕐 ' + esc(e.time) + '</span>' : '') +
+      (who ? '<span>· ' + who.title + '</span>' : '<span>· 온 가족</span>') + '</div>' +
+      (e.note ? '<div class="ev-note">' + esc(e.note) + '</div>' : '') +
+      '</div>' +
+    '<span class="mini-btns">' +
+      '<button class="mini-btn" data-act="eventEdit" data-id="' + e.id + '" aria-label="수정">✏️</button>' +
+      '<button class="mini-btn del" data-act="eventDel" data-id="' + e.id + '" aria-label="삭제">✕</button>' +
+    '</span></div>';
 }
 
 function eventRow(e, upcoming){
@@ -1481,6 +2002,7 @@ function drawCalendar(){
 
 /* ---------------- 모달: 할 일 / 루틴 / 돈 / 일정 ---------------- */
 var modalWho = 'haram';
+var evImportant = false;
 function openTodoModal(memberId, itemId){
   var editing = null, who = memberId || 'haram';
   if (itemId){
@@ -1544,25 +2066,33 @@ function findEvent(id){
   (S.events || []).forEach(function(e){ if (e.id === id) out = e; });
   return out;
 }
-
-function openEventModal(eventId){
+function openEventModal(eventId, presetDate){
   var y = new Date();
   var editing = eventId ? findEvent(eventId) : null;
+  var startDate = editing ? (editing.date || dateKey(y)) : (presetDate || dateKey(y));
+  var endDate = editing ? (editing.endDate || '') : '';
+  var important = editing ? !!editing.important : false;
   var html = '<h3>' + (editing ? '일정 수정' : '일정 추가') + '</h3>' +
-    '<p class="hint">' + (editing ? '일정 내용을 고쳐서 저장하면 바로 반영돼요.' : '가족 일정을 적어 두면 홈에서도 볼 수 있어요.') + '</p>' +
+    '<p class="hint">' + (editing ? '일정 내용을 고쳐서 저장하면 바로 반영돼요.' : '여행처럼 여러 날 일정은 종료일도 적어 주세요.') + '</p>' +
     '<div class="field"><div class="field-label">일정</div>' +
-      '<input class="input" id="evTitle" value="' + (editing ? esc(editing.title) : '') + '" placeholder="예: 하람 학교 운동회"></div>' +
+      '<input class="input" id="evTitle" value="' + (editing ? esc(editing.title) : '') + '" placeholder="예: 엄마 부산감"></div>' +
     '<div class="field" style="display:flex;gap:8px">' +
-      '<div style="flex:1.4"><div class="field-label">날짜</div><input class="input" id="evDate" type="date" value="' + (editing ? esc(editing.date || dateKey(y)) : dateKey(y)) + '"></div>' +
-      '<div style="flex:1"><div class="field-label">시간</div><input class="input" id="evTime" type="time" value="' + (editing ? esc(editing.time || '') : '09:00') + '"></div>' +
+      '<div style="flex:1.35"><div class="field-label">시작일</div><input class="input" id="evDate" type="date" value="' + esc(startDate) + '"></div>' +
+      '<div style="flex:1.35"><div class="field-label">종료일 (선택)</div><input class="input" id="evEnd" type="date" value="' + esc(endDate) + '"></div>' +
+    '</div>' +
+    '<div class="field" style="display:flex;gap:8px">' +
+      '<div style="flex:1"><div class="field-label">시간 (선택)</div><input class="input" id="evTime" type="time" value="' + (editing ? esc(editing.time || '') : '') + '"></div>' +
+      '<div style="flex:1"><div class="field-label">중요 표시</div>' +
+        '<button class="btn block" data-act="evImp" style="padding:12px;justify-content:center;' + (important ? 'background:#FFF3DC;border-color:#EFCB80;color:#8A6414' : '') + '">' + (important ? '⭐ 중요' : '☆ 보통') + '</button></div>' +
     '</div>' +
     '<div class="field"><div class="field-label">누구</div><div class="who-row">' +
       whoRowButtons('modalWho', editing ? (editing.who || '') : '') + '</div></div>' +
     '<div class="field"><div class="field-label">메모 (선택)</div>' +
-      '<input class="input" id="evNote" value="' + (editing ? esc(editing.note || '') : '') + '" placeholder="예: 체육북 입고 9시까지 등교"></div>' +
+      '<input class="input" id="evNote" value="' + (editing ? esc(editing.note || '') : '') + '" placeholder="예: 기차 9시, 부산역"></div>' +
     '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
       '<button class="btn main" data-act="eventSave" data-id="' + (editing ? editing.id : '') + '">저장</button></div>';
   modalWho = editing ? (editing.who || '') : '';
+  evImportant = important;
   openModal(html);
 }
 
@@ -1595,6 +2125,8 @@ function openMemoEditModal(id){
 }
 
 function openSettings(){
+  var sec = S.security || {};
+  var pinOn = !!sec.pin;
   var html = '<h3>설정</h3>' +
     '<p class="hint">모든 기록은 이 기기 안에만 저장돼요. 인터넷이 없어도 그대로 열려요.<br>기기를 바꾸기 전에는 백업 파일로 저장해 두세요.</p>' +
     '<div class="reward-box">' +
@@ -1610,14 +2142,61 @@ function openSettings(){
       '</div>' +
       '<p class="seg-note" style="text-align:left;margin:8px 0 0">바꾸면 이 기기의 루틴 적립 금액이 모두 이 값으로 다시 계산돼요.<br>용돈기입장의 입금·사용 내역은 그대로 남아요.</p>' +
     '</div>' +
+
+    '<div class="protect-box">' +
+      '<div class="sec-title" style="font-size:15px"><span class="em">🛡️</span>데이터 보호</div>' +
+      '<p class="sec-sub" style="margin:3px 0 6px">화면 잠금·아이 기기 잠금·자동 저장·백업을 관리해요</p>' +
+      '<div class="prow">' +
+        '<div class="p-l"><div class="p-t">🔒 화면 비밀번호</div>' +
+          '<div class="p-s">' + (pinOn ? '켜짐 · 4자리로 기록을 가려요' : '꺼짐 · 4자리로 기록을 가려요') + '</div></div>' +
+        '<button class="p-b" data-act="pinManage">비밀번호 관리</button>' +
+      '</div>' +
+      '<div class="prow">' +
+        '<div class="p-l"><div class="p-t">🧸 이 기기는 ' + (sec.kidLock ? '하람·이솔' : '가족 모두') + ' 기기</div>' +
+          '<div class="p-s">' + (sec.kidLock ? '켜짐 · 아이들은 설정·용돈 단가·삭제를 바꿀 수 없어요' : '꺼짐 · 가족 누구나 바꿀 수 있어요') + '</div></div>' +
+      '</div>' +
+      '<button class="pw-btn' + (sec.kidLock ? ' on' : '') + '" data-act="kidLock">' +
+        (sec.kidLock ? '🔓 하람·이솔 기기 잠금 풀기' : '🔒 하람·이솔 기기로 잠그기') + '</button>' +
+      '<div class="prow" style="margin-top:6px">' +
+        '<div class="p-l"><div class="p-t">💾 자동 저장</div>' +
+          '<div class="p-s">자동 저장됨 · 최근 저장 ' + savedTimeLabel() + '</div></div>' +
+        '<button class="p-b" data-act="saveNow">지금 저장</button>' +
+      '</div>' +
+      '<div class="prow">' +
+        '<div class="p-l"><div class="p-t">📦 백업 파일</div>' +
+          '<div class="p-s">모든 기록을 JSON 파일로 내보내고 다시 불러올 수 있어요</div></div>' +
+      '</div>' +
+      '<div class="row" style="gap:7px">' +
+        '<button class="btn grow" data-act="backup">내보내기</button>' +
+        '<button class="btn grow" data-act="restore">불러오기</button>' +
+      '</div>' +
+    '</div>' +
+    callLogBox() +
     '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">' +
-      '<button class="btn block" data-act="backup">💾 백업 파일로 저장</button>' +
-      '<button class="btn block" data-act="restore">📂 백업 파일 불러오기</button>' +
       '<button class="btn block" data-act="reset" style="color:#C9656B">🧹 처음부터 다시 시작</button>' +
     '</div>' +
     '<p class="seg-note" style="margin-top:14px">브라우저 메뉴에서 “홈 화면에 추가”를 하면<br>앱처럼 열 수 있어요.</p>' +
     '<div class="actions"><button class="btn block" data-act="closeModal">닫기</button></div>';
   openModal(html, { focus: false });
+}
+
+function callLogBox(){
+  var list = (S.calls || []).slice().reverse().slice(0, 8);
+  var h = '<div class="protect-box" style="margin-top:12px">' +
+    '<div class="sec-title" style="font-size:15px"><span class="em" style="color:#B08A5C">' + phoneSVG('em-ic') + '</span>통화 기록</div>';
+  if (!list.length){
+    h += '<div class="empty" style="padding:14px 4px">아직 통화 기록이 없어요</div>';
+  } else {
+    list.forEach(function(c){
+      var t = new Date(c.ts);
+      h += '<div class="call-log-row"><span class="cl-w">' + memberById(c.who).title + '</span>' +
+        '<span class="cl-n">' + esc(c.number || '') + '</span>' +
+        '<span class="cl-t">' + (t.getMonth()+1) + '/' + t.getDate() + ' ' + timeLabel(t) + '</span></div>';
+    });
+    h += '<button class="btn block" style="margin-top:9px;padding:10px;font-size:12.5px" data-act="callLogClear">통화 기록 지우기</button>';
+  }
+  h += '<p class="seg-note" style="text-align:left;margin:8px 0 0">전화 버튼을 누른 기록이 여기에 남아요.</p></div>';
+  return h;
 }
 
 function openReset(){
@@ -1779,12 +2358,655 @@ function openShareModal(){
 }
 
 /* =========================================================
+   v4 — 시계·가족 상태·전화·알림·일정 달력·식사·데이터 보호
+   ========================================================= */
+
+/* ---------- 작은 도우미 ---------- */
+function teleNum(id){
+  var raw = (S.phones || {})[id] || '';
+  return raw.replace(/[^0-9+]/g, '');
+}
+var STATUS_OPTIONS = [
+  { e:'🏠', t:'집에 있어요' },
+  { e:'🏫', t:'학교/유치원' },
+  { e:'📚', t:'학원' },
+  { e:'🚇', t:'퇴근 중' },
+  { e:'💼', t:'일하는 중' },
+  { e:'🛒', t:'외출 중' },
+  { e:'😴', t:'자고 있어요' }
+];
+function statusOf(id){
+  var st = (S.status || {})[id];
+  if (st && st.text) return { emoji: st.emoji || '🏠', text: st.text, ts: +st.ts || 0 };
+  return { emoji: '🏠', text: '집에 있어요', ts: 0 };
+}
+function relTime(ts){
+  if (!ts) return '아직 안 바꿨어요';
+  var d = Math.floor((Date.now() - ts) / 1000);
+  if (d < 60) return '방금 전 바뀜';
+  if (d < 3600) return Math.floor(d / 60) + '분 전 바뀜';
+  if (d < 86400) return Math.floor(d / 3600) + '시간 전 바뀜';
+  var dd = Math.floor(d / 86400);
+  if (dd === 1) return '어제 바뀜';
+  if (dd < 7) return dd + '일 전 바뀜';
+  var dt = new Date(ts);
+  return (dt.getMonth()+1) + '월 ' + dt.getDate() + '일 바뀜';
+}
+function timeLabel(d){ var h = d.getHours(); return (h < 12 ? '오전 ' : '오후 ') + ((h % 12) || 12) + ':' + pad(d.getMinutes()); }
+function savedTimeLabel(){ return S.savedAt ? timeLabel(new Date(S.savedAt)) : '아직'; }
+
+/* ---------- 실시간 시계 ---------- */
+var clockTimer = null, clockDay = dateKey(new Date()), tickN = 0;
+function tickClock(){
+  var now = new Date();
+  var c = document.getElementById('liveClock');
+  if (c) c.textContent = pad(now.getHours()) + ':' + pad(now.getMinutes()) + ':' + pad(now.getSeconds());
+  var dl = document.getElementById('liveDate');
+  if (dl) dl.textContent = (now.getMonth()+1) + '월 ' + now.getDate() + '일 ' + weekdayKR(now) + '요일';
+  MEMBERS.forEach(function(m){
+    var e = document.getElementById('stTime-' + m.id);
+    if (e) e.textContent = relTime(statusOf(m.id).ts);
+  });
+  tickN++;
+  if (tickN % 20 === 0) paintBadge();
+  if (dateKey(now) !== clockDay){
+    clockDay = dateKey(now);
+    if (S && !document.getElementById('lockScreen')) render();
+  }
+}
+function startClock(){ if (!clockTimer) clockTimer = setInterval(tickClock, 1000); }
+
+/* ---------- 알림 ---------- */
+var NOTIF_ROWS = [
+  { k:'event30',  e:'📅', t:'일정 30분 전' },
+  { k:'medicine', e:'💊', t:'약 먹을 시간' },
+  { k:'pickup',   e:'🎒', t:'하원 시간' },
+  { k:'routine',  e:'🌙', t:'루틴 미완료' },
+  { k:'message',  e:'💬', t:'새 메시지' },
+  { k:'praise',   e:'⭐', t:'칭찬 도착' },
+  { k:'dinner',   e:'🍲', t:'오늘 저녁 메뉴' }
+];
+function notifCfg(){ return (S.notif && S.notif.settings) || {}; }
+function notifMem(){ return (S.notif && S.notif.members) || {}; }
+function notifItems(){
+  var out = [], now = new Date(), key = todayKey();
+  var cfg = notifCfg(), mem = notifMem();
+  var nowMin = now.getHours() * 60 + now.getMinutes();
+  var nowMs = now.getTime();
+  function memOn(id){ return mem[id] !== false; }
+
+  if (cfg.event30){
+    (S.events || []).forEach(function(e){
+      if (!e.date) return;
+      if (e.who && !memOn(e.who)) return;
+      var start = fromKey(e.date);
+      if (e.time){
+        var tp = String(e.time).split(':');
+        start.setHours(+tp[0] || 0, +tp[1] || 0, 0, 0);
+      } else start.setHours(9, 0, 0, 0);
+      var diffMin = Math.round((start - now) / 60000);
+      if (e.date === key && diffMin >= 0 && diffMin <= 30){
+        out.push({ id:'ev30:'+e.id+':'+key, emoji:'📅', tab:'plan',
+          title: (diffMin ? diffMin + '분 뒤 ' : '곧 ') + trimText(e.title, 22),
+          sub: (e.time ? e.time + ' · ' : '') + '일정이 곧 시작해요' });
+      } else if (e.date === key && diffMin > 30){
+        out.push({ id:'evtoday:'+e.id+':'+key, emoji:'📅', tab:'plan',
+          title: '오늘 일정 · ' + trimText(e.title, 20),
+          sub: (e.time ? e.time + ' · ' : '') + '오늘 챙길 일이에요' });
+      } else if (e.date > key && e.date <= dateKey(addDays(now, 2))){
+        var dd = fromKey(e.date);
+        out.push({ id:'evsoon:'+e.id+':'+key, emoji:'📅', tab:'plan',
+          title: (dd.getMonth()+1) + '/' + dd.getDate() + ' · ' + trimText(e.title, 20),
+          sub: (ddayLabel(e.date) || '') + ' 일정이 있어요' });
+      }
+    });
+  }
+
+  if (cfg.medicine){
+    KIDS.forEach(function(k){
+      if (!memOn(k.id)) return;
+      var rec = ((S.health || {})[key] || {})[k.id] || {};
+      if (now.getHours() >= 8 && !rec.supp1)
+        out.push({ id:'med1:'+k.id+':'+key, emoji:'💊', tab:'health', title:k.title + ' 아침 영양제', sub:'아직 체크하지 않았어요' });
+      if (now.getHours() >= 18 && !rec.supp2)
+        out.push({ id:'med2:'+k.id+':'+key, emoji:'💊', tab:'health', title:k.title + ' 저녁 영양제', sub:'아직 체크하지 않았어요' });
+    });
+  }
+
+  if (cfg.pickup){
+    var pickup = 15 * 60 + 30;
+    if (nowMin >= pickup - 30 && nowMin <= pickup + 150){
+      KIDS.forEach(function(k){
+        if (!memOn(k.id)) return;
+        out.push({ id:'pick:'+k.id+':'+key, emoji:'🎒', tab:'routine', title:k.title + ' 하원 시간이에요', sub:'오후 3시 30분 · 준비물을 챙겨요' });
+      });
+    }
+  }
+
+  if (cfg.routine && now.getHours() >= 16){
+    KIDS.forEach(function(k){
+      if (!memOn(k.id)) return;
+      var total = routineItems(k.id).length;
+      if (!total) return;
+      var done = routineDoneCount(k.id);
+      if (done < total)
+        out.push({ id:'rout:'+k.id+':'+key, emoji:'🌙', tab:'routine',
+          title: k.title + ' 루틴 ' + (total - done) + '개 남았어요',
+          sub: done + '/' + total + '개 완료 · 오늘 안에 마저 해 봐요' });
+    });
+  }
+
+  if (cfg.message){
+    var fresh = (S.memos || []).filter(function(m){ return (m.ts || 0) > nowMs - 24*3600*1000; });
+    if (fresh.length){
+      var last = fresh[fresh.length - 1];
+      out.push({ id:'msg:'+key+':'+fresh.length, emoji:'💬', tab:'memo',
+        title:'가족 메모에 새 소식 ' + fresh.length + '개',
+        sub: (last.who ? memberById(last.who).title + ' · ' : '') + trimText(last.sticker || last.text, 24) });
+    }
+  }
+
+  if (cfg.praise){
+    var pr = (S.praise || []).filter(function(p){ return (p.ts || 0) > nowMs - 24*3600*1000; });
+    if (pr.length){
+      var lp = pr[pr.length - 1];
+      out.push({ id:'praise:'+key+':'+pr.length, emoji:'⭐', tab:'praise',
+        title:'칭찬 카드 ' + pr.length + '개 도착',
+        sub: memberById(lp.to).title + ' · ' + trimText(lp.msg, 22) });
+    }
+  }
+
+  if (cfg.dinner){
+    var day = S.meals[key];
+    if (!day || !day.items || !day.items.length)
+      out.push({ id:'dinner:'+key, emoji:'🍲', tab:'meal', title:'오늘 저녁 메뉴가 비어 있어요', sub:'식사 탭에서 메뉴를 적어 두면 좋아요' });
+  }
+
+  return out;
+}
+function unreadNotifCount(){
+  var items = notifItems(), read = (S.notif && S.notif.read) || {}, n = 0;
+  items.forEach(function(it){ if (!read[it.id]) n++; });
+  return n;
+}
+function paintBadge(){
+  var b = document.getElementById('notifBadge');
+  if (!b) return;
+  var n = unreadNotifCount();
+  if (n > 0){ b.textContent = n > 9 ? '9+' : String(n); b.hidden = false; }
+  else { b.textContent = ''; b.hidden = true; }
+}
+function openNotifCenter(){
+  var items = notifItems(), read = (S.notif && S.notif.read) || {};
+  var h = '<h3>🔔 알림</h3>' +
+    '<p class="hint">오늘 챙길 일을 모아 두었어요. 누르면 그 화면으로 이동해요.<br>휴대폰 알림이 아니라 앱 안에서만 보여요.</p>' +
+    '<div class="sec-head"><div class="sec-title" style="font-size:15px"><span class="em">📬</span>최근 알림' + (items.length ? ' ' + items.length : '') + '</div>' +
+      (items.length ? '<button class="btn" style="padding:8px 11px;font-size:12px;border-radius:12px" data-act="notifAllRead">모두 읽음</button>' : '') + '</div>';
+  if (!items.length) h += '<div class="empty" style="padding:16px 6px">지금은 새 알림이 없어요</div>';
+  items.forEach(function(it){
+    h += '<button class="n-item' + (read[it.id] ? ' read' : '') + '" data-act="notifGo" data-id="' + it.id + '" data-tab="' + it.tab + '">' +
+      '<span class="n-ic">' + it.emoji + '</span>' +
+      '<span class="n-body"><span class="n-title">' + esc(it.title) + '</span><span class="n-sub">' + esc(it.sub) + '</span></span>' +
+      '<i class="n-dot"></i></button>';
+  });
+  h += '<div class="sec-title" style="font-size:15px;margin-top:16px"><span class="em">🔔</span>알림 설정</div>' +
+    '<p class="sec-sub">필요한 알림만 켜 두면 시끄럽지 않아요</p>';
+  NOTIF_ROWS.forEach(function(row){
+    var on = !!notifCfg()[row.k];
+    h += '<button class="nrow' + (on ? ' on' : '') + '" data-act="notifToggle" data-k="' + row.k + '">' +
+      '<span class="box">' + checkMark() + '</span><span class="nlab">' + row.e + ' ' + row.t + '</span></button>';
+  });
+  h += '<div class="field-label" style="margin:12px 0 7px">누구 알림을 받을까요</div><div class="mem-chips">';
+  MEMBERS.forEach(function(m){
+    var on = notifMem()[m.id] !== false;
+    h += '<button class="mem-chip' + (on ? ' on' : '') + '" data-act="notifMember" data-m="' + m.id + '"><span class="dot"></span>' + m.title + '</button>';
+  });
+  h += '</div><div class="actions"><button class="btn block" data-act="closeModal">닫기</button></div>';
+  openModal(h, { focus:false });
+  paintBadge();
+  buzz(8);
+}
+
+/* ---------- 가족 상태 ---------- */
+var statusTarget = 'haram', statusPick = null;
+function openStatusModal(id){
+  statusTarget = id;
+  var cur = statusOf(id);
+  var isPreset = STATUS_OPTIONS.some(function(o){ return o.t === cur.text; });
+  statusPick = isPreset ? { emoji: cur.emoji, text: cur.text } : null;
+  var html = '<h3>' + memberById(id).title + ' 상태 바꾸기</h3>' +
+    '<p class="hint">지금 어디에 있는지 알려 주면 가족이 한눈에 봐요.</p>' +
+    '<div class="st-options">' + STATUS_OPTIONS.map(function(o){
+      var on = !!(statusPick && statusPick.text === o.t);
+      return '<button class="st-opt' + (on ? ' on' : '') + '" data-act="statusPick" data-e="' + o.e + '" data-t="' + esc(o.t) + '">' + o.e + ' ' + o.t + '</button>';
+    }).join('') + '</div>' +
+    '<div class="field"><div class="field-label">직접 적기</div>' +
+      '<input class="input" id="stCustom" placeholder="예: 할머니 댁, 병원" value="' + (isPreset ? '' : esc(cur.text)) + '"></div>' +
+    '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
+      '<button class="btn main" data-act="statusSave">저장</button></div>';
+  openModal(html);
+}
+function saveStatus(){
+  var custom = ((document.getElementById('stCustom') || {}).value || '').trim();
+  var e = statusPick ? statusPick.emoji : '🏠';
+  var t = statusPick ? statusPick.text : '집에 있어요';
+  if (custom){ e = '📝'; t = custom; }
+  if (!S.status) S.status = {};
+  S.status[statusTarget] = { emoji: e, text: t, ts: Date.now() };
+  saveNow(); closeModal(); render();
+  toast(memberById(statusTarget).title + ' 상태를 바꿨어요');
+}
+
+/* ---------- 전화번호 ---------- */
+function openPhoneModal(id){
+  var cur = (S.phones || {})[id] || '';
+  var html = '<h3>' + memberById(id).title + ' 전화번호</h3>' +
+    '<p class="hint">이 기기에만 저장돼요. 저장하면 홈의 전화 버튼을 눌러 바로 걸 수 있어요.</p>' +
+    '<div class="field"><div class="field-label">전화번호</div>' +
+      '<input class="input num" id="phNum" type="tel" inputmode="tel" value="' + esc(cur) + '" placeholder="010-1234-5678"></div>' +
+    '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
+      '<button class="btn main" data-act="phoneSave" data-m="' + id + '">저장</button></div>';
+  openModal(html);
+}
+function recordCall(id){
+  if (!S.calls) S.calls = [];
+  S.calls.push({ who: id, number: (S.phones || {})[id] || '', ts: Date.now() });
+  if (S.calls.length > 60) S.calls = S.calls.slice(-60);
+  saveNow();
+}
+
+/* ---------- 일정 달력 ---------- */
+function planGoto(k){
+  var d = fromKey(k), now = new Date();
+  S.planCal = { offset: (d.getFullYear() - now.getFullYear()) * 12 + (d.getMonth() - now.getMonth()), sel: k };
+}
+
+/* ---------- 식사 메뉴 편집 ---------- */
+var mealEditState = null;
+function openMealEdit(){
+  var k = mealKey(), day = mealDayObj(k);
+  mealEditState = { key: k, items: day.items.map(function(it){
+    return { id: it.id, text: it.text, allergy: it.allergy, checked: it.checked };
+  }) };
+  if (!mealEditState.items.length) mealEditState.items.push({ id:'', text:'', allergy:'', checked:false });
+  drawMealEdit();
+}
+function drawMealEdit(){
+  var d = fromKey(mealEditState.key);
+  var html = '<h3>메뉴 편집</h3>' +
+    '<p class="hint">' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 식단이에요. 알레르기 번호는 아래 1~19번 중 해당 번호를 적어 주세요.</p>' +
+    '<div id="mealEditRows">';
+  mealEditState.items.forEach(function(it, i){
+    html += '<div class="meal-edit-row">' +
+      '<input class="input me-t" data-me="t" data-i="' + i + '" value="' + esc(it.text) + '" placeholder="예: 미니새우버거">' +
+      '<input class="input me-a" data-me="a" data-i="' + i + '" value="' + esc(it.allergy) + '" placeholder="1·9">' +
+      '<button class="mini-btn del" data-act="mealEditDel" data-i="' + i + '" aria-label="메뉴 빼기">✕</button></div>';
+  });
+  html += '</div>' +
+    '<button class="dashed-add" data-act="mealEditAdd" style="margin-top:4px">+ 메뉴 추가</button>' +
+    '<div class="allergy-legend" style="margin-top:12px">' + ALLERGY_LEGEND + '</div>' +
+    '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
+      '<button class="btn main" data-act="mealEditSave">저장</button></div>';
+  openModal(html, { focus:false });
+}
+function collectMealEdit(){
+  var rows = document.querySelectorAll('[data-me]');
+  for (var i = 0; i < rows.length; i++){
+    var el = rows[i], idx = +el.dataset.i;
+    if (!mealEditState.items[idx]) continue;
+    if (el.dataset.me === 't') mealEditState.items[idx].text = el.value;
+    else mealEditState.items[idx].allergy = el.value;
+  }
+}
+function saveMealEdit(){
+  collectMealEdit();
+  var key = mealEditState.key;
+  var prev = S.meals[key] || {};
+  var items = mealEditState.items.filter(function(it){ return String(it.text || '').trim(); })
+    .map(function(it){ return { id: it.id || uid(), text: String(it.text).trim(), allergy: String(it.allergy || '').trim(), checked: !!it.checked }; });
+  S.meals[key] = { items: items, memo: typeof prev.memo === 'string' ? prev.memo : '' };
+  saveNow(); closeModal(); S.tab = 'meal'; render();
+  toast(items.length ? '메뉴를 저장했어요' : '메뉴를 비웠어요');
+}
+
+/* ---------- 데이터 보호 (비밀번호·아이 기기 잠금) ---------- */
+var adultPassUntil = 0;
+var GUARDED = {
+  settings:1, pinManage:1, pinSave:1, pinOff:1, kidLock:1, rewardPreset:1, restore:1, reset:1, resetConfirm:1,
+  todoAdd:1, todoEdit:1, todoDel:1, routineAdd:1, routineEdit:1, routineDel:1,
+  eventAdd:1, eventEdit:1, eventDel:1, eventStar:1, moneyAdd:1, moneyDel:1, praiseDel:1,
+  memoDel:1, memoEdit:1, mealEdit:1, mealEditSave:1, phoneSetup:1, phoneSave:1,
+  statusChange:1, statusSave:1, missionShuffle:1, callLogClear:1
+};
+function kidLocked(){ return !!(S.security && S.security.kidLock) && adultPassUntil < Date.now(); }
+function needAdult(act){ return kidLocked() && !!GUARDED[act]; }
+function pinHash(p){
+  var s = 'familyRecord|' + String(p) + '|chwawa', hh = 5381;
+  for (var i = 0; i < s.length; i++) hh = ((hh << 5) + hh + s.charCodeAt(i)) | 0;
+  return (hh >>> 0).toString(36);
+}
+var pinBuf = '', pinMode = 'unlock', pinPending = null;
+function pinPadHTML(){
+  var keys = ['1','2','3','4','5','6','7','8','9','clr','0','del'];
+  return '<div class="pin-pad">' + keys.map(function(k){
+    if (k === 'clr') return '<button class="ghost" data-act="pinKey" data-k="clr">지움</button>';
+    if (k === 'del') return '<button class="ghost" data-act="pinKey" data-k="del">⌫</button>';
+    return '<button data-act="pinKey" data-k="' + k + '">' + k + '</button>';
+  }).join('') + '</div>';
+}
+function paintDots(){
+  var groups = document.querySelectorAll('.pin-dots');
+  for (var j = 0; j < groups.length; j++){
+    var ch = groups[j].children;
+    for (var i = 0; i < ch.length; i++) ch[i].classList.toggle('on', i < pinBuf.length);
+  }
+}
+function showLockScreen(){
+  if (document.getElementById('lockScreen')) return;
+  pinMode = 'unlock'; pinBuf = '';
+  var wrap = document.createElement('div');
+  wrap.className = 'lockscreen';
+  wrap.id = 'lockScreen';
+  wrap.innerHTML = '<div class="lock-card" id="lockCard">' +
+    '<span class="lk-av">' + avatarSVG('haram') + '</span>' +
+    '<h2>우리 가족 기록장</h2>' +
+    '<p class="lock-sub">비밀번호 4자리를 눌러 주세요</p>' +
+    '<div class="pin-dots"><i></i><i></i><i></i><i></i></div>' +
+    pinPadHTML() +
+    (S.security.hint ? '<p class="lock-hint">힌트 · ' + esc(S.security.hint) + '</p>' : '') +
+    '<button class="lock-forgot" data-act="pinForgot">비밀번호를 잊었어요</button>' +
+  '</div>';
+  document.body.appendChild(wrap);
+  document.body.style.overflow = 'hidden';
+}
+function hideLockScreen(){
+  var w = document.getElementById('lockScreen');
+  if (w) w.remove();
+  document.body.style.overflow = '';
+}
+function pinKey(k){
+  if (k === 'del') pinBuf = pinBuf.slice(0, -1);
+  else if (k === 'clr') pinBuf = '';
+  else if (pinBuf.length < 4) pinBuf += k;
+  paintDots();
+  if (pinBuf.length === 4) setTimeout(checkPin, 130);
+}
+function checkPin(){
+  var ok = pinHash(pinBuf) === ((S.security && S.security.pin) || '');
+  if (!ok){
+    pinBuf = ''; paintDots();
+    var card = document.querySelector('#lockCard') || document.querySelector('.overlay .sheet');
+    if (card){ card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+    buzz(30); toast('비밀번호가 맞지 않아요');
+    return;
+  }
+  pinBuf = ''; paintDots();
+  if (pinMode === 'adult'){
+    adultPassUntil = Date.now() + 5 * 60 * 1000;
+    var pend = pinPending; pinPending = null;
+    closeModal();
+    toast('어른 확인 완료 · 5분 동안 바꿀 수 있어요');
+    if (pend) onAction(pend.act, { dataset: pend.ds, classList: { contains: function(){ return false; } }, parentNode: null });
+  } else {
+    hideLockScreen();
+    render();
+    buzz(10);
+    toast('다시 오셨네요! 오늘도 화이팅 🐶');
+  }
+}
+function openAdultCheck(){
+  var hasPin = !!(S.security && S.security.pin);
+  pinMode = 'adult'; pinBuf = '';
+  var html;
+  if (hasPin){
+    html = '<h3>🔒 비밀번호 확인</h3>' +
+      '<p class="hint">이 기기는 하람·이솔 기기로 잠겨 있어요.<br>어른 비밀번호 4자리를 눌러 주세요.</p>' +
+      '<div class="pin-dots"><i></i><i></i><i></i><i></i></div>' + pinPadHTML() +
+      '<div class="actions"><button class="btn block" data-act="closeModal">취소</button></div>';
+  } else {
+    html = '<h3>🔒 어른 확인</h3>' +
+      '<p class="hint">이 기기는 하람·이솔 기기로 잠겨 있어요.<br>어른이면 확인을 눌러 주세요.</p>' +
+      '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
+      '<button class="btn main" data-act="adultYes">어른이에요</button></div>';
+  }
+  openModal(html, { focus:false });
+}
+function openPinManage(){
+  var sec = S.security || {};
+  var on = !!sec.pin;
+  var html = '<h3>🔒 화면 비밀번호</h3>' +
+    '<p class="hint">4자리 숫자로 기록을 가려요. 앱을 열 때마다 비밀번호를 눌러야 들어갈 수 있어요.</p>';
+  if (on){
+    html += '<div class="field"><div class="field-label">지금 비밀번호</div><input class="input num" id="pinCur" type="tel" inputmode="numeric" maxlength="4" placeholder="4자리"></div>' +
+      '<div class="field"><div class="field-label">새 비밀번호</div><input class="input num" id="pinNew" type="tel" inputmode="numeric" maxlength="4" placeholder="새 4자리"></div>' +
+      '<div class="field"><div class="field-label">힌트 (선택)</div><input class="input" id="pinHint" value="' + esc(sec.hint || '') + '" placeholder="예: 아이들 생일"></div>' +
+      '<div class="actions"><button class="btn" data-act="closeModal">닫기</button>' +
+        '<button class="btn main" data-act="pinSave">바꾸기</button></div>' +
+      '<button class="btn block" style="margin-top:8px;color:#C9656B" data-act="pinOff">비밀번호 끄기</button>';
+  } else {
+    html += '<div class="field"><div class="field-label">새 비밀번호 (4자리)</div><input class="input num" id="pinNew" type="tel" inputmode="numeric" maxlength="4" placeholder="예: 1234"></div>' +
+      '<div class="field"><div class="field-label">한 번 더</div><input class="input num" id="pinNew2" type="tel" inputmode="numeric" maxlength="4" placeholder="같은 숫자"></div>' +
+      '<div class="field"><div class="field-label">힌트 (선택)</div><input class="input" id="pinHint" placeholder="예: 아이들 생일"></div>' +
+      '<div class="actions"><button class="btn" data-act="closeModal">취소</button>' +
+        '<button class="btn main" data-act="pinSave">켜기</button></div>';
+  }
+  html += '<p class="seg-note" style="text-align:left;margin-top:12px">비밀번호를 잊으면 기록에 들어갈 수 없어요.<br>힌트를 꼭 남겨 주세요.</p>';
+  openModal(html);
+}
+
+/* ---------- v4 동작 ---------- */
+function onActionV4(act, el){
+  var d = el.dataset || {};
+  switch(act){
+    /* 배너 */
+    case 'bannerToggle':
+      S.bannerClosed = !S.bannerClosed; save();
+      if (S.tab === 'home') render();
+      return true;
+
+    /* 가족 상태 */
+    case 'statusChange': openStatusModal(d.m); return true;
+    case 'statusPick': {
+      statusPick = { emoji: d.e, text: d.t };
+      var row = el.parentNode;
+      Array.prototype.forEach.call(row.children, function(b){ b.classList.remove('on'); });
+      el.classList.add('on');
+      var cu = document.getElementById('stCustom');
+      if (cu) cu.value = '';
+      return true;
+    }
+    case 'statusSave': saveStatus(); return true;
+
+    /* 전화 */
+    case 'phoneSetup': openPhoneModal(d.m); return true;
+    case 'phoneSave': {
+      var num = ((document.getElementById('phNum') || {}).value || '').trim();
+      if (num && num.replace(/[^0-9]/g, '').length < 7){
+        toast('전화번호를 다시 확인해 주세요');
+        return true;
+      }
+      if (!S.phones) S.phones = {};
+      S.phones[d.m] = num;
+      saveNow(); closeModal(); render();
+      toast(num ? memberById(d.m).title + ' 번호를 저장했어요' : '번호를 지웠어요');
+      return true;
+    }
+    case 'callLog':
+      recordCall(d.m);
+      return true;           /* tel: 링크는 브라우저가 열도록 두기 */
+    case 'callLogClear':
+      S.calls = []; saveNow(); openSettings(); toast('통화 기록을 지웠어요');
+      return true;
+
+    /* 알림 */
+    case 'notifCenter': openNotifCenter(); return true;
+    case 'notifToggle': {
+      var k = d.k;
+      S.notif.settings[k] = !S.notif.settings[k];
+      saveNow(); openNotifCenter();
+      return true;
+    }
+    case 'notifMember': {
+      var mm = d.m;
+      S.notif.members[mm] = (S.notif.members[mm] === false);
+      saveNow(); openNotifCenter();
+      return true;
+    }
+    case 'notifGo': {
+      S.notif.read[d.id] = true;
+      var keys = Object.keys(S.notif.read);
+      if (keys.length > 300) keys.slice(0, keys.length - 300).forEach(function(x){ delete S.notif.read[x]; });
+      S.tab = d.tab || 'home';
+      saveNow(); closeModal(); render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return true;
+    }
+    case 'notifAllRead': {
+      notifItems().forEach(function(it){ S.notif.read[it.id] = true; });
+      saveNow(); openNotifCenter(); paintBadge();
+      toast('모두 읽음으로 표시했어요');
+      return true;
+    }
+
+    /* 루틴 고정 필터 */
+    case 'routineFilter':
+      S.ui.routineFilter = d.v === 'pinned' ? 'pinned' : 'all';
+      save(); render();
+      return true;
+
+    /* 일정 달력 */
+    case 'planPrev': S.planCal.offset = (S.planCal.offset || 0) - 1; save(); render(); return true;
+    case 'planNext': S.planCal.offset = (S.planCal.offset || 0) + 1; save(); render(); return true;
+    case 'planPick': {
+      var kk = d.d || '';
+      S.planCal.sel = (S.planCal.sel === kk) ? '' : kk;
+      save(); render();
+      return true;
+    }
+    case 'eventAdd': {
+      var sel = S.planCal && S.planCal.sel;
+      openEventModal(null, sel || undefined);
+      return true;
+    }
+    case 'eventStar': {
+      var ev = findEvent(d.id);
+      if (ev){ ev.important = !ev.important; saveNow(); render(); toast(ev.important ? '중요 일정으로 표시했어요 ⭐' : '중요 표시를 풀었어요'); }
+      return true;
+    }
+    case 'evImp': {
+      evImportant = !evImportant;
+      el.style.background = evImportant ? '#FFF3DC' : '';
+      el.style.borderColor = evImportant ? '#EFCB80' : '';
+      el.style.color = evImportant ? '#8A6414' : '';
+      el.textContent = evImportant ? '⭐ 중요' : '☆ 보통';
+      return true;
+    }
+
+    /* 식사 */
+    case 'mealGo': {
+      var day = addDays(new Date(), +d.d || 0);
+      S.mealDate = dateKey(day);
+      save(); render();
+      return true;
+    }
+    case 'mealToggle': {
+      var md = mealDayObj(mealKey());
+      md.items.forEach(function(it){ if (it.id === d.id) it.checked = !it.checked; });
+      save(); render(); buzz(8);
+      return true;
+    }
+    case 'mealAll': {
+      var md2 = mealDayObj(mealKey());
+      var allOn = md2.items.length && md2.items.every(function(it){ return it.checked; });
+      md2.items.forEach(function(it){ it.checked = !allOn; });
+      save(); render();
+      if (!allOn){ buzz(14); celebrate('🍚'); toast('오늘 메뉴를 다 먹었어요! 🍚'); }
+      return true;
+    }
+    case 'algToggle':
+      S.ui.algOpen = !S.ui.algOpen; save(); render();
+      return true;
+    case 'mealEdit': openMealEdit(); return true;
+    case 'mealEditAdd':
+      collectMealEdit(); mealEditState.items.push({ id:'', text:'', allergy:'', checked:false });
+      drawMealEdit();
+      return true;
+    case 'mealEditDel':
+      collectMealEdit();
+      mealEditState.items.splice(+d.i, 1);
+      if (!mealEditState.items.length) mealEditState.items.push({ id:'', text:'', allergy:'', checked:false });
+      drawMealEdit();
+      return true;
+    case 'mealEditSave': saveMealEdit(); return true;
+
+    /* 데이터 보호 */
+    case 'pinManage': openPinManage(); return true;
+    case 'pinSave': {
+      var cur = ((document.getElementById('pinCur') || {}).value || '').trim();
+      var nw = ((document.getElementById('pinNew') || {}).value || '').trim();
+      var nw2 = ((document.getElementById('pinNew2') || {}).value || '').trim();
+      var hint = ((document.getElementById('pinHint') || {}).value || '').trim();
+      if (!/^\d{4}$/.test(nw)){ toast('비밀번호는 숫자 4자리로 정해 주세요'); return true; }
+      if (S.security.pin){
+        if (pinHash(cur) !== S.security.pin){ toast('지금 비밀번호가 맞지 않아요'); return true; }
+      } else if (nw !== nw2){
+        toast('두 번 적은 비밀번호가 달라요'); return true;
+      }
+      S.security.pin = pinHash(nw);
+      S.security.hint = hint;
+      saveNow(); closeModal(); openSettings();
+      toast('화면 비밀번호를 켰어요 🔒');
+      return true;
+    }
+    case 'pinOff': {
+      var c0 = ((document.getElementById('pinCur') || {}).value || '').trim();
+      if (pinHash(c0) !== S.security.pin){ toast('지금 비밀번호가 맞지 않아요'); return true; }
+      S.security.pin = ''; S.security.hint = '';
+      saveNow(); closeModal(); openSettings();
+      toast('화면 비밀번호를 껐어요');
+      return true;
+    }
+    case 'kidLock': {
+      S.security.kidLock = !S.security.kidLock;
+      if (!S.security.kidLock) adultPassUntil = 0;
+      saveNow(); openSettings();
+      toast(S.security.kidLock ? '하람·이솔 기기로 잠갔어요 🔒' : '아이 기기 잠금을 풀었어요');
+      return true;
+    }
+    case 'saveNow':
+      saveNow(); openSettings(); toast('지금 저장했어요 · ' + savedTimeLabel());
+      return true;
+    case 'pinKey': pinKey(d.k); return true;
+    case 'adultYes': {
+      adultPassUntil = Date.now() + 5 * 60 * 1000;
+      var pend2 = pinPending; pinPending = null;
+      closeModal();
+      toast('어른 확인 완료 · 5분 동안 바꿀 수 있어요');
+      if (pend2) onAction(pend2.act, { dataset: pend2.ds, classList: { contains: function(){ return false; } }, parentNode: null });
+      return true;
+    }
+    case 'pinForgot':
+      openModal('<h3>비밀번호를 잊으셨나요?</h3>' +
+        '<p class="hint">이 비밀번호는 기기 안에만 저장되어 저희도 알 수 없어요.<br>' + (S.security.hint ? '힌트: ' + esc(S.security.hint) : '힌트를 남기지 않으셨어요.') + '<br><br>방법이 없을 때는 백업 파일이 있다면 새로 시작한 뒤 불러올 수 있어요. 기록이 지워질 수 있으니 신중하게 결정해 주세요.</p>' +
+        '<div class="actions"><button class="btn block" data-act="closeModal">다시 해 볼게요</button></div>');
+      return true;
+  }
+  return false;
+}
+
+/* =========================================================
    ACTIONS
    ========================================================= */
 function findTodo(m, id){ var out = null; (S.todos[m] || []).forEach(function(t){ if (t.id === id) out = t; }); return out; }
 function findRoutine(kid, id){ var out = null; (S.routines[kid] || []).forEach(function(it){ if (it.id === id) out = it; }); return out; }
 
 function onAction(act, el){
+  if (needAdult(act)){
+    pinPending = { act: act, ds: el.dataset ? JSON.parse(JSON.stringify(el.dataset)) : {} };
+    openAdultCheck();
+    return;
+  }
+  if (onActionV4(act, el)) return;
   var d = el.dataset || {};
   switch(act){
     case 'mealSave':
@@ -2001,16 +3223,22 @@ function onAction(act, el){
     case 'eventSave': {
       var title = ((document.getElementById('evTitle') || {}).value || '').trim();
       var date = (document.getElementById('evDate') || {}).value || todayKey();
+      var endRaw = (document.getElementById('evEnd') || {}).value || '';
       var time = (document.getElementById('evTime') || {}).value || '';
       var note = ((document.getElementById('evNote') || {}).value || '').trim();
       if (!title){ toast('일정 내용을 적어 주세요'); return; }
+      if (endRaw && endRaw < date){ toast('종료일은 시작일보다 뒤로 정해 주세요'); return; }
       if (d.id){
         var ev = findEvent(d.id);
         if (!ev){ toast('일정을 찾을 수 없어요'); closeModal(); render(); return; }
         ev.title = title; ev.date = date; ev.time = time; ev.note = note; ev.who = modalWho || '';
+        ev.endDate = endRaw || '';
+        ev.important = !!evImportant;
       } else {
-        S.events.push({ id: uid(), title: title, date: date, time: time, note: note, who: modalWho || '' });
+        S.events.push({ id: uid(), title: title, date: date, endDate: endRaw || '', time: time, note: note,
+          who: modalWho || '', important: !!evImportant });
       }
+      planGoto(date);
       saveNow(); closeModal();
       S.tab = 'plan'; render();
       toast(d.id ? '일정을 저장했어요' : '일정을 추가했어요');
@@ -2170,18 +3398,25 @@ function onAction(act, el){
 document.addEventListener('click', function(e){
   var el = e.target.closest ? e.target.closest('[data-act]') : null;
   if (!el) return;
+  var act = el.dataset.act;
+  /* tel: 링크는 브라우저가 전화앱을 열도록 그대로 둡니다 */
+  if (act === 'callLog'){ onAction(act, el); return; }
   e.preventDefault();
-  onAction(el.dataset.act, el);
+  onAction(act, el);
 });
 
 /* inputs */
 document.addEventListener('input', function(e){
   var el = e.target;
   if (!el || !el.dataset || !el.dataset.act) return;
-  if (el.dataset.act === 'mealInput'){
-    var key = todayKey();
-    if (!S.meals[key]) S.meals[key] = {};
-    S.meals[key][el.dataset.k] = el.value;
+  if (kidLocked() && (el.dataset.act === 'startMoney' || el.dataset.act === 'rewardInput')){
+    toast('아이 기기로 잠겨 있어요 · 어른 확인이 필요해요');
+    return;
+  }
+  if (el.dataset.act === 'mealMemo'){
+    var mk = mealKey();
+    var mo = mealDayObj(mk);
+    mo.memo = el.value;
     save();
   }
   if (el.dataset.act === 'startMoney'){
@@ -2201,7 +3436,7 @@ document.addEventListener('change', function(e){
   if (el.dataset.act === 'startMoney'){
     saveNow(); render();
   }
-  if (el.dataset.act === 'mealInput'){
+  if (el.dataset.act === 'mealMemo'){
     saveNow();
   }
   if (el.dataset.act === 'rewardInput'){
@@ -2265,7 +3500,14 @@ document.getElementById('brandMark').innerHTML = avatarSVG('haram');
 probeStorage();
 load();
 if (!S.tab) S.tab = 'home';
-render();
+if (S.security && S.security.pin){
+  /* 비밀번호가 켜져 있으면 먼저 잠금 화면을 보여 줍니다 */
+  showLockScreen();
+  paintBadge();
+} else {
+  render();
+}
+startClock();
 window.addEventListener('beforeunload', saveNow);
 document.addEventListener('visibilitychange', function(){ if (document.hidden) saveNow(); });
 })();
