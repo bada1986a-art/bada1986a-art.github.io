@@ -472,6 +472,19 @@ textarea.input{min-height:88px;resize:vertical;line-height:1.5}
 .reward-row .unit{font-size:14px;font-weight:800;color:#8E7A61}
 .warn{background:#FFF1E8;border:1.5px solid #F6D3B8;color:#A9642F;border-radius:16px;padding:11px 13px;font-size:12.5px;line-height:1.5;margin:0 2px 12px;font-weight:700}
 
+/* ---------- 일정 시간 고르기 ---------- */
+.ev-seg{display:flex;gap:6px;margin-bottom:8px}
+.ev-seg button{flex:1;padding:10px 4px;border-radius:13px;border:1.6px solid #EFE3CE;background:#fff;box-shadow:var(--shadow-sm);font-weight:800;font-size:12.5px;color:#9A866D;line-height:1.3}
+.ev-seg button.on{background:#FFF3DC;border-color:#EFCB80;color:#8A6414;box-shadow:0 3px 10px rgba(230,190,90,.22)}
+.ev-time-big{display:flex;align-items:center;justify-content:center;gap:5px;padding:11px 8px;border-radius:14px;background:#FFF9EA;border:1.5px dashed #EEDDB8;font-weight:900;font-size:20px;color:#7A6134;letter-spacing:.4px;margin-bottom:8px}
+.ev-time-big.off{font-size:13px;font-weight:800;color:#A29280;background:#FAF6EF;border-style:solid;border-color:#EFE6D6}
+.ev-time-row{display:flex;gap:6px}
+.ev-time-row select{flex:1;min-width:0;min-height:48px;border:1.5px solid #EBDFC9;border-radius:13px;background:#fff;padding:0 4px;font-size:15px;font-weight:800;color:#6E5A43;outline:none;appearance:none;-webkit-appearance:none;text-align:center;text-align-last:center}
+.ev-time-row select:focus{border-color:#E9C98C;box-shadow:0 0 0 3px rgba(255,231,163,.4)}
+.ev-preset-row{display:flex;gap:5px;margin-top:8px}
+.ev-preset-row button{flex:1;min-width:0;padding:8px 2px;border-radius:11px;border:1.4px solid #EFE6D6;background:#fff;font-weight:800;font-size:11.5px;color:#8E7A61}
+.ev-preset-row button.on{background:#FFF6DA;border-color:#F2CF7C;color:#8A6414}
+
 /* ---------- 공유 (카톡) ---------- */
 .share-area{
   width:100%;min-height:210px;max-height:44vh;overflow:auto;resize:vertical;
@@ -1767,7 +1780,7 @@ function planRow(e){
   var en = e.endDate ? fromKey(e.endDate) : null;
   var range = (s.getMonth()+1) + '.' + s.getDate() + (en ? ' ~ ' + (en.getMonth()+1) + '.' + en.getDate() : '');
   var meta = [];
-  if (e.time) meta.push('🕐 ' + e.time);
+  if (e.time) meta.push('🕒 ' + e.time);
   meta.push(e.who ? memberById(e.who).title : '온 가족');
   var dd = ddayLabel(e.date);
   if (dd) meta.push(dd);
@@ -1793,27 +1806,7 @@ function eventRow(e, upcoming){
   return '<div class="event">' +
     '<div class="ev-date"><div class="m">' + (d.getMonth()+1) + '월</div><div class="dd">' + d.getDate() + '</div></div>' +
     '<div class="ev-body"><div class="ev-title">' + esc(e.title) + ' ' + dday + '</div>' +
-      '<div class="ev-meta">' + (e.time ? '<span>🕐 ' + esc(e.time) + '</span>' : '') +
-      (who ? '<span>· ' + who.title + '</span>' : '<span>· 온 가족</span>') + '</div>' +
-      (e.note ? '<div class="ev-note">' + esc(e.note) + '</div>' : '') +
-      '</div>' +
-    '<span class="mini-btns">' +
-      '<button class="mini-btn" data-act="eventEdit" data-id="' + e.id + '" aria-label="수정">✏️</button>' +
-      '<button class="mini-btn del" data-act="eventDel" data-id="' + e.id + '" aria-label="삭제">✕</button>' +
-    '</span></div>';
-}
-
-function eventRow(e, upcoming){
-  var d = fromKey(e.date);
-  var diff = Math.round((fromKey(e.date) - fromKey(todayKey())) / 86400000);
-  var dday = '';
-  if (diff === 0) dday = '<span class="ev-dday today">오늘</span>';
-  else if (diff > 0) dday = '<span class="ev-dday">D-' + diff + '</span>';
-  var who = e.who ? memberById(e.who) : null;
-  return '<div class="event">' +
-    '<div class="ev-date"><div class="m">' + (d.getMonth()+1) + '월</div><div class="dd">' + d.getDate() + '</div></div>' +
-    '<div class="ev-body"><div class="ev-title">' + esc(e.title) + ' ' + dday + '</div>' +
-      '<div class="ev-meta">' + (e.time ? '<span>🕐 ' + esc(e.time) + '</span>' : '') +
+      '<div class="ev-meta">' + (e.time ? '<span>🕒 ' + esc(e.time) + '</span>' : '') +
       (who ? '<span>· ' + who.title + '</span>' : '<span>· 온 가족</span>') + '</div>' +
       (e.note ? '<div class="ev-note">' + esc(e.note) + '</div>' : '') +
       '</div>' +
@@ -2065,12 +2058,66 @@ function findEvent(id){
   (S.events || []).forEach(function(e){ if (e.id === id) out = e; });
   return out;
 }
+
+/* ---------- 일정 시간 고르기 (종일 / 오전·오후·시·분 / 빠른 선택) ---------- */
+var evTime = { mode:'all', h:9, m:0 };
+var EV_PRESETS = ['09:00','10:00','14:00','15:30','18:00'];
+function parseEvTime(t){
+  var mt = String(t || '').match(/^(\d{1,2}):(\d{2})/);
+  if (!mt) return { mode:'all', h:9, m:0 };
+  return { mode:'time', h: Math.min(23, Math.max(0, +mt[1] || 0)), m: Math.min(59, Math.max(0, +mt[2] || 0)) };
+}
+function evTime24(){ return pad(evTime.h) + ':' + pad(evTime.m); }
+function evTimeLabel(){
+  var h = evTime.h, ampm = h < 12 ? '오전' : '오후', h12 = (h % 12) || 12;
+  return ampm + ' ' + h12 + ':' + pad(evTime.m);
+}
+function evTimeHTML(){
+  var on = evTime.mode === 'time';
+  var out = '<div class="ev-seg">' +
+    '<button data-act="evTimeAll" aria-pressed="' + (!on) + '" class="' + (on ? '' : 'on') + '">🌞 종일 (시간 없음)</button>' +
+    '<button data-act="evTimeOn" aria-pressed="' + on + '" class="' + (on ? 'on' : '') + '">🕒 시간 정하기</button>' +
+    '</div>';
+  if (!on) return out + '<div class="ev-time-big off">시간 없이 하루 종일 일정으로 저장해요</div>';
+  var h12 = (evTime.h % 12) || 12, ampm = evTime.h < 12 ? 'am' : 'pm';
+  var hrOpts = '', i;
+  for (i = 1; i <= 12; i++) hrOpts += '<option value="' + i + '"' + (i === h12 ? ' selected' : '') + '>' + i + '시</option>';
+  var mnOpts = '';
+  for (i = 0; i < 60; i += 5) mnOpts += '<option value="' + i + '"' + (i === evTime.m ? ' selected' : '') + '>' + pad(i) + '분</option>';
+  if (evTime.m % 5) mnOpts += '<option value="' + evTime.m + '" selected>' + pad(evTime.m) + '분</option>';
+  out += '<div class="ev-time-big" id="evTimeBig">🕒 ' + evTimeLabel() + '</div>' +
+    '<div class="ev-time-row">' +
+      '<select id="evAmpm" data-act="evTimeSel" aria-label="오전 오후"><option value="am"' + (ampm === 'am' ? ' selected' : '') + '>오전</option><option value="pm"' + (ampm === 'pm' ? ' selected' : '') + '>오후</option></select>' +
+      '<select id="evHour" data-act="evTimeSel" aria-label="시">' + hrOpts + '</select>' +
+      '<select id="evMin" data-act="evTimeSel" aria-label="분">' + mnOpts + '</select>' +
+    '</div>' +
+    '<div class="ev-preset-row">' + EV_PRESETS.map(function(t){
+      return '<button data-act="evTimePreset" data-t="' + t + '" class="' + (evTime24() === t ? 'on' : '') + '">' + t + '</button>';
+    }).join('') + '</div>';
+  return out;
+}
+function paintEvTime(){
+  var wrap = document.getElementById('evTimeWrap');
+  if (wrap) wrap.innerHTML = evTimeHTML();
+  if (evTime.mode === 'time') buzz(6);
+}
+function readEvTimeSelects(){
+  var ap = (document.getElementById('evAmpm') || {}).value || 'am';
+  var h12 = +((document.getElementById('evHour') || {}).value || 12);
+  var m = +((document.getElementById('evMin') || {}).value || 0);
+  evTime = { mode:'time', h: (h12 % 12) + (ap === 'pm' ? 12 : 0), m: m };
+  var big = document.getElementById('evTimeBig');
+  if (big) big.textContent = '🕒 ' + evTimeLabel();
+  var ps = document.querySelectorAll('.ev-preset-row button');
+  for (var i = 0; i < ps.length; i++) ps[i].classList.toggle('on', ps[i].dataset.t === evTime24());
+}
 function openEventModal(eventId, presetDate){
   var y = new Date();
   var editing = eventId ? findEvent(eventId) : null;
   var startDate = editing ? (editing.date || dateKey(y)) : (presetDate || dateKey(y));
   var endDate = editing ? (editing.endDate || '') : '';
   var important = editing ? !!editing.important : false;
+  evTime = parseEvTime(editing ? editing.time : '');
   var html = '<h3>' + (editing ? '일정 수정' : '일정 추가') + '</h3>' +
     '<p class="hint">' + (editing ? '일정 내용을 고쳐서 저장하면 바로 반영돼요.' : '여행처럼 여러 날 일정은 종료일도 적어 주세요.') + '</p>' +
     '<div class="field"><div class="field-label">일정</div>' +
@@ -2079,11 +2126,9 @@ function openEventModal(eventId, presetDate){
       '<div style="flex:1.35"><div class="field-label">시작일</div><input class="input" id="evDate" type="date" value="' + esc(startDate) + '"></div>' +
       '<div style="flex:1.35"><div class="field-label">종료일 (선택)</div><input class="input" id="evEnd" type="date" value="' + esc(endDate) + '"></div>' +
     '</div>' +
-    '<div class="field" style="display:flex;gap:8px">' +
-      '<div style="flex:1"><div class="field-label">시간 (선택)</div><input class="input" id="evTime" type="time" value="' + (editing ? esc(editing.time || '') : '') + '"></div>' +
-      '<div style="flex:1"><div class="field-label">중요 표시</div>' +
-        '<button class="btn block" data-act="evImp" style="padding:12px;justify-content:center;' + (important ? 'background:#FFF3DC;border-color:#EFCB80;color:#8A6414' : '') + '">' + (important ? '⭐ 중요' : '☆ 보통') + '</button></div>' +
-    '</div>' +
+    '<div class="field"><div class="field-label">시간</div><div id="evTimeWrap">' + evTimeHTML() + '</div></div>' +
+    '<div class="field"><div class="field-label">중요 표시</div>' +
+      '<button class="btn block" data-act="evImp" style="padding:12px;justify-content:center;' + (important ? 'background:#FFF3DC;border-color:#EFCB80;color:#8A6414' : '') + '">' + (important ? '⭐ 중요' : '☆ 보통') + '</button></div>' +
     '<div class="field"><div class="field-label">누구</div><div class="who-row">' +
       whoRowButtons('modalWho', editing ? (editing.who || '') : '') + '</div></div>' +
     '<div class="field"><div class="field-label">메모 (선택)</div>' +
@@ -2917,6 +2962,20 @@ function onActionV4(act, el){
       el.textContent = evImportant ? '⭐ 중요' : '☆ 보통';
       return true;
     }
+    case 'evTimeAll':
+      evTime.mode = 'all';
+      paintEvTime();
+      return true;
+    case 'evTimeOn':
+      evTime.mode = 'time';
+      paintEvTime();
+      return true;
+    case 'evTimePreset': {
+      var tp = parseEvTime(d.t);
+      evTime = { mode:'time', h: tp.h, m: tp.m };
+      paintEvTime();
+      return true;
+    }
 
     /* 식사 */
     case 'mealGo': {
@@ -3240,7 +3299,8 @@ function onAction(act, el){
       var title = ((document.getElementById('evTitle') || {}).value || '').trim();
       var date = (document.getElementById('evDate') || {}).value || todayKey();
       var endRaw = (document.getElementById('evEnd') || {}).value || '';
-      var time = (document.getElementById('evTime') || {}).value || '';
+      if (evTime.mode === 'time' && document.getElementById('evAmpm')) readEvTimeSelects();
+      var time = evTime.mode === 'time' ? evTime24() : '';
       var note = ((document.getElementById('evNote') || {}).value || '').trim();
       if (!title){ toast('일정 내용을 적어 주세요'); return; }
       if (endRaw && endRaw < date){ toast('종료일은 시작일보다 뒤로 정해 주세요'); return; }
@@ -3417,6 +3477,11 @@ document.addEventListener('click', function(e){
   var act = el.dataset.act;
   /* tel: 링크는 브라우저가 전화앱을 열도록 그대로 둡니다 */
   if (act === 'callLog'){ onAction(act, el); return; }
+  /* 입력겉·고르기 상자는 브라우저 기본 동작(키보드·선택창)을 막지 않습니다 */
+  var tag = (e.target && e.target.tagName ? e.target.tagName : '').toUpperCase();
+  if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || tag === 'OPTION'){
+    if (act === 'sheet' || act === 'overlay') return;
+  }
   e.preventDefault();
   onAction(act, el);
 });
@@ -3468,6 +3533,8 @@ document.addEventListener('change', function(e){
       if (root && root.querySelector('[data-act="rewardInput"]')) openSettings();
     }, 0);
   }
+  /* 일정 시간: 오전·오후 / 시 / 분 고르기 */
+  if (el.dataset.act === 'evTimeSel') readEvTimeSelects();
 });
 
 document.addEventListener('keydown', function(e){
