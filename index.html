@@ -937,7 +937,6 @@ function mergeDefaults(p){
   if (p.reward != null && +p.reward > 0) s.reward = Math.round(+p.reward);
   if (!(s.reward > 0)) s.reward = REWARD_DEFAULT;
   if (typeof p.bannerClosed === 'boolean') s.bannerClosed = p.bannerClosed;
-  if (typeof p.mealDate === 'string') s.mealDate = p.mealDate;
   if (+p.savedAt > 0) s.savedAt = +p.savedAt;
   // guarantee all four members exist in todos
   MEMBERS.forEach(function(m){
@@ -3500,6 +3499,9 @@ document.getElementById('brandMark').innerHTML = avatarSVG('haram');
 probeStorage();
 load();
 if (!S.tab) S.tab = 'home';
+/* 지난번에 보던 날짜·달력 위치는 남기지 않고 오늘로 시작합니다. */
+S.mealDate = '';
+S.planCal = { offset: 0, sel: '' };
 if (S.security && S.security.pin){
   /* 비밀번호가 켜져 있으면 먼저 잠금 화면을 보여 줍니다 */
   showLockScreen();
